@@ -2,7 +2,7 @@ package org.erueka84
 
 import org.erueka84.Common.readLines
 
-val sonarReads = readLines("/day1.input").map { it.toInt() }
+val sonarReads: Sequence<Int> = readLines("/day1.input").map { it.toInt() }
 
 fun puzzle1(): Int =
     sonarReads
