@@ -1,24 +1,24 @@
 package org.erueka84
 
-import java.io.File
+import org.erueka84.Common.readLines
 
-val sonarReads = File("src/main/resources/day1.input").readLines().map { it.toInt() }
+val sonarReads = readLines("/day1.input").map { it.toInt() }
 
 fun puzzle1(): Int =
-    sonarReads.take(sonarReads.size - 1)
+    sonarReads
         .zip(sonarReads.drop(1))
         .count { (prev, next) -> next > prev }
 
 
 fun puzzle2(): Int =
     sonarReads.windowed(3).let { windowed ->
-        windowed.take(windowed.size - 1)
+        windowed
             .zip(windowed.drop(1))
             .count { (prev, next) -> next.sum() > prev.sum() }
     }
 
 fun puzzle2Bis(): Int =
-    sonarReads.take(sonarReads.size - 3)
+    sonarReads
         .zip(sonarReads.drop(3))
         .count { (prev, next) -> next > prev }
 
