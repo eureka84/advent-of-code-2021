@@ -11,9 +11,9 @@ fun puzzle1(): Int =
 
 
 fun puzzle2(): Int =
-    sonarReads.windowed(3).let { windowed ->
-        windowed
-            .zip(windowed.drop(1))
+    sonarReads.windowed(3).let { windows ->
+        windows
+            .zip(windows.drop(1))
             .count { (prev, next) -> next.sum() > prev.sum() }
     }
 
