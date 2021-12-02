@@ -51,12 +51,12 @@ data class SubMarine2(val horizontalPosition: Int = 0, val depth: Int = 0, val a
 }
 
 object Day2 {
-    fun part1(): SubMarine =
+    private fun part1(): SubMarine =
         readLines("/day2.input")
             .map { parseCommand(it)!! }
             .fold(SubMarine()) { sub, command -> sub.execute(command) }
 
-    fun part2(): SubMarine2 =
+    private fun part2(): SubMarine2 =
         readLines("/day2.input")
             .map { parseCommand(it)!! }
             .fold(SubMarine2()) { sub, command -> sub.execute(command) }
