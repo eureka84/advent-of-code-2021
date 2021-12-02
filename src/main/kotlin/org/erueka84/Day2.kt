@@ -32,16 +32,38 @@ data class SubMarine(val horizontalPosition: Int = 0, val depth: Int = 0) {
             DOWN -> this.copy(depth = this.depth + command.steps)
             FORWARD -> this.copy(horizontalPosition = this.horizontalPosition + command.steps)
         }
+
+    fun score(): Int = depth * horizontalPosition
+}
+
+data class SubMarine2(val horizontalPosition: Int = 0, val depth: Int = 0, val aim: Int =0) {
+    fun execute(command: Command): SubMarine2 =
+        when (command.direction) {
+            UP -> this.copy(aim = this.aim - command.steps)
+            DOWN -> this.copy(aim = this.aim + command.steps)
+            FORWARD -> this.copy(
+                horizontalPosition = this.horizontalPosition + command.steps,
+                depth = this.depth + (this.aim * command.steps)
+            )
+        }
+
+    fun score(): Int = depth * horizontalPosition
 }
 
 object Day2 {
-    fun puzzle1(): SubMarine =
+    fun part1(): SubMarine =
         readLines("/day2.input")
             .map { parseCommand(it)!! }
             .fold(SubMarine()) { sub, command -> sub.execute(command) }
 
+    fun part2(): SubMarine2 =
+        readLines("/day2.input")
+            .map { parseCommand(it)!! }
+            .fold(SubMarine2()) { sub, command -> sub.execute(command) }
+
     @JvmStatic
     fun main(args: Array<String>) {
-        println(puzzle1())
+        println(part1().score())
+        println(part2().score())
     }
 }
