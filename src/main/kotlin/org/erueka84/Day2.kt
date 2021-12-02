@@ -30,7 +30,7 @@ object Day2 {
     }
 
     data class SubMarine(val horizontalPosition: Int = 0, val depth: Int = 0) {
-        fun execute(command: Command): SubMarine =
+        infix fun execute(command: Command): SubMarine =
             when (command.direction) {
                 UP -> this.copy(depth = this.depth - command.steps)
                 DOWN -> this.copy(depth = this.depth + command.steps)
@@ -41,7 +41,7 @@ object Day2 {
     }
 
     data class SubMarine2(val horizontalPosition: Int = 0, val depth: Int = 0, val aim: Int =0) {
-        fun execute(command: Command): SubMarine2 =
+        infix fun execute(command: Command): SubMarine2 =
             when (command.direction) {
                 UP -> this.copy(aim = this.aim - command.steps)
                 DOWN -> this.copy(aim = this.aim + command.steps)
@@ -57,12 +57,12 @@ object Day2 {
     private fun part1(): SubMarine =
         readLines("/day2.input")
             .map { parseCommand(it)!! }
-            .fold(SubMarine()) { sub, command -> sub.execute(command) }
+            .fold(SubMarine()) { subMarine, command -> subMarine execute command }
 
     private fun part2(): SubMarine2 =
         readLines("/day2.input")
             .map { parseCommand(it)!! }
-            .fold(SubMarine2()) { sub, command -> sub.execute(command) }
+            .fold(SubMarine2()) { subMarine, command -> subMarine execute command }
 
     @JvmStatic
     fun main(args: Array<String>) {
