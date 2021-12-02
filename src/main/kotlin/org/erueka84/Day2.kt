@@ -1,58 +1,59 @@
 package org.erueka84
 
-import org.erueka84.Command.Companion.parseCommand
 import org.erueka84.Common.readLines
-import org.erueka84.Direction.*
+import org.erueka84.Day2.Command.Companion.parseCommand
+import org.erueka84.Day2.Direction.*
 
-enum class Direction(val value: String) {
-    UP("up"), DOWN("down"), FORWARD("forward");
+object Day2 {
 
-    companion object {
-        fun from(s: String): Direction? {
-            return values().find { d -> d.value == s }
-        }
-    }
-}
+    enum class Direction(val value: String) {
+        UP("up"), DOWN("down"), FORWARD("forward");
 
-data class Command(val direction: Direction, val steps: Int) {
-    companion object {
-        fun parseCommand(line: String): Command? {
-            val split: List<String> = line.split(" ")
-            val steps = split[1].toInt()
-            val maybeDirection = Direction.from(split[0])
-            return maybeDirection?.let { direction ->
-                Command(direction, steps)
+        companion object {
+            fun from(s: String): Direction? {
+                return values().find { d -> d.value == s }
             }
         }
     }
-}
 
-data class SubMarine(val horizontalPosition: Int = 0, val depth: Int = 0) {
-    fun execute(command: Command): SubMarine =
-        when (command.direction) {
-            UP -> this.copy(depth = this.depth - command.steps)
-            DOWN -> this.copy(depth = this.depth + command.steps)
-            FORWARD -> this.copy(horizontalPosition = this.horizontalPosition + command.steps)
+    data class Command(val direction: Direction, val steps: Int) {
+        companion object {
+            fun parseCommand(line: String): Command? {
+                val split: List<String> = line.split(" ")
+                val steps = split[1].toInt()
+                val maybeDirection = Direction.from(split[0])
+                return maybeDirection?.let { direction ->
+                    Command(direction, steps)
+                }
+            }
         }
+    }
 
-    fun score(): Int = depth * horizontalPosition
-}
+    data class SubMarine(val horizontalPosition: Int = 0, val depth: Int = 0) {
+        fun execute(command: Command): SubMarine =
+            when (command.direction) {
+                UP -> this.copy(depth = this.depth - command.steps)
+                DOWN -> this.copy(depth = this.depth + command.steps)
+                FORWARD -> this.copy(horizontalPosition = this.horizontalPosition + command.steps)
+            }
 
-data class SubMarine2(val horizontalPosition: Int = 0, val depth: Int = 0, val aim: Int =0) {
-    fun execute(command: Command): SubMarine2 =
-        when (command.direction) {
-            UP -> this.copy(aim = this.aim - command.steps)
-            DOWN -> this.copy(aim = this.aim + command.steps)
-            FORWARD -> this.copy(
-                horizontalPosition = this.horizontalPosition + command.steps,
-                depth = this.depth + (this.aim * command.steps)
-            )
-        }
+        fun score(): Int = depth * horizontalPosition
+    }
 
-    fun score(): Int = depth * horizontalPosition
-}
+    data class SubMarine2(val horizontalPosition: Int = 0, val depth: Int = 0, val aim: Int =0) {
+        fun execute(command: Command): SubMarine2 =
+            when (command.direction) {
+                UP -> this.copy(aim = this.aim - command.steps)
+                DOWN -> this.copy(aim = this.aim + command.steps)
+                FORWARD -> this.copy(
+                    horizontalPosition = this.horizontalPosition + command.steps,
+                    depth = this.depth + (this.aim * command.steps)
+                )
+            }
 
-object Day2 {
+        fun score(): Int = depth * horizontalPosition
+    }
+
     private fun part1(): SubMarine =
         readLines("/day2.input")
             .map { parseCommand(it)!! }

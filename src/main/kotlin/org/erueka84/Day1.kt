@@ -2,7 +2,8 @@ package org.erueka84
 
 import org.erueka84.Common.readLines
 
-object Day1{
+object Day1 {
+
     private val sonarReads: Sequence<Int> = readLines("/day1.input").map { it.toInt() }
 
     private fun part1(): Int =
