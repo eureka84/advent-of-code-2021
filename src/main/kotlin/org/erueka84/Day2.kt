@@ -6,12 +6,12 @@ import org.erueka84.Day2.Direction.*
 
 object Day2 {
 
-    enum class Direction(val value: String) {
-        UP("up"), DOWN("down"), FORWARD("forward");
+    enum class Direction {
+        UP, DOWN, FORWARD;
 
         companion object {
             fun from(s: String): Direction? {
-                return values().find { d -> d.value == s }
+                return values().find { d -> d.name.lowercase() == s }
             }
         }
     }
