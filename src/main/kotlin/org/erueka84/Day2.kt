@@ -18,8 +18,10 @@ data class Command(val direction: Direction, val steps: Int) {
     companion object {
         fun parseCommand(line: String): Command? {
             val split: List<String> = line.split(" ")
-            return Direction.from(split[0])?.let { direction ->
-                Command(direction, split[1].toInt())
+            val steps = split[1].toInt()
+            val maybeDirection = Direction.from(split[0])
+            return maybeDirection?.let { direction ->
+                Command(direction, steps)
             }
         }
     }
