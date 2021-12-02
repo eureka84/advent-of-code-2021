@@ -3,6 +3,7 @@ package org.erueka84
 import org.erueka84.Common.readLines
 import org.erueka84.Day2.Command.Companion.parseCommand
 import org.erueka84.Day2.Direction.*
+import org.erueka84.Day2.Direction.Companion.parse
 
 object Day2 {
 
@@ -10,7 +11,7 @@ object Day2 {
         UP, DOWN, FORWARD;
 
         companion object {
-            fun from(s: String): Direction? {
+            fun parse(s: String): Direction? {
                 return values().find { d -> d.name.lowercase() == s }
             }
         }
@@ -18,14 +19,10 @@ object Day2 {
 
     data class Command(val direction: Direction, val steps: Int) {
         companion object {
-            fun parseCommand(line: String): Command? {
-                val split: List<String> = line.split(" ")
-                val steps = split[1].toInt()
-                val maybeDirection = Direction.from(split[0])
-                return maybeDirection?.let { direction ->
-                    Command(direction, steps)
+            fun parseCommand(line: String): Command? =
+                line.split(" ").let { (rawDirection, rawSteps) ->
+                    parse(rawDirection)?.let { direction -> Command(direction, rawSteps.toInt()) }
                 }
-            }
         }
     }
 
@@ -40,7 +37,7 @@ object Day2 {
         fun score(): Int = depth * horizontalPosition
     }
 
-    data class SubMarine2(val horizontalPosition: Int = 0, val depth: Int = 0, val aim: Int =0) {
+    data class SubMarine2(val horizontalPosition: Int = 0, val depth: Int = 0, val aim: Int = 0) {
         infix fun execute(command: Command): SubMarine2 =
             when (command.direction) {
                 UP -> copy(aim = aim - command.steps)
