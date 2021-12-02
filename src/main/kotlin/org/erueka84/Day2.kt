@@ -32,9 +32,9 @@ object Day2 {
     data class SubMarine(val horizontalPosition: Int = 0, val depth: Int = 0) {
         infix fun execute(command: Command): SubMarine =
             when (command.direction) {
-                UP -> this.copy(depth = this.depth - command.steps)
-                DOWN -> this.copy(depth = this.depth + command.steps)
-                FORWARD -> this.copy(horizontalPosition = this.horizontalPosition + command.steps)
+                UP -> copy(depth = depth - command.steps)
+                DOWN -> copy(depth = depth + command.steps)
+                FORWARD -> copy(horizontalPosition = horizontalPosition + command.steps)
             }
 
         fun score(): Int = depth * horizontalPosition
@@ -43,11 +43,11 @@ object Day2 {
     data class SubMarine2(val horizontalPosition: Int = 0, val depth: Int = 0, val aim: Int =0) {
         infix fun execute(command: Command): SubMarine2 =
             when (command.direction) {
-                UP -> this.copy(aim = this.aim - command.steps)
-                DOWN -> this.copy(aim = this.aim + command.steps)
-                FORWARD -> this.copy(
-                    horizontalPosition = this.horizontalPosition + command.steps,
-                    depth = this.depth + (this.aim * command.steps)
+                UP -> copy(aim = aim - command.steps)
+                DOWN -> copy(aim = aim + command.steps)
+                FORWARD -> copy(
+                    horizontalPosition = horizontalPosition + command.steps,
+                    depth = depth + (aim * command.steps)
                 )
             }
 
