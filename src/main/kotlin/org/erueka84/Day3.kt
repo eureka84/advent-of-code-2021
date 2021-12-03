@@ -48,15 +48,11 @@ object Day3Part2 {
         return LifeSupportRating(computeOxygenRating(inputLines), computeCO2Rating(inputLines))
     }
 
-    private fun computeOxygenRating(inputLines: List<String>): Int {
-        return computeRating(inputLines, { bitCounts -> bitCounts.mostFrequent })
-    }
+    private fun computeOxygenRating(inputLines: List<String>): Int =
+        computeRating(inputLines, { bitCounts -> bitCounts.mostFrequent })
 
-    private fun computeCO2Rating(inputLines: List<String>): Int {
-        return computeRating(inputLines, { bitCounts ->
-            if (bitCounts.oneCount < bitCounts.zeroCount) '1' else '0'
-        })
-    }
+    private fun computeCO2Rating(inputLines: List<String>): Int =
+        computeRating(inputLines, { bitCounts -> bitCounts.leastFrequent})
 
     private tailrec fun computeRating(
         inputLines: List<String>,
@@ -83,7 +79,7 @@ object CommonBits {
     data class BitCounts(val zeroCount: Int = 0, val oneCount: Int = 0) {
 
         val mostFrequent: Char = if (oneCount >= zeroCount) '1' else '0'
-        val leastFrequent: Char = if (zeroCount < oneCount) '0' else '1'
+        val leastFrequent: Char = if (oneCount < zeroCount) '1' else '0'
 
         operator fun plus(other: BitCounts): BitCounts = BitCounts(
             zeroCount = zeroCount + other.zeroCount,
