@@ -22,10 +22,10 @@ object Day3 {
 
     class Report(private val bits: List<BitCounts>) {
         private val gamma: Int
-            get() = bitsStringToInt { it.mostFrequent }
+            get() = bitsStringToInt { bitCounts ->  bitCounts.mostFrequent }
 
         private val epsilon: Int
-            get() = bitsStringToInt { it.leastFrequent }
+            get() = bitsStringToInt { bitCounts -> bitCounts.leastFrequent }
 
         private fun bitsStringToInt(transform: (BitCounts) -> CharSequence) =
             bits.joinToString(separator = "", transform = transform).toInt(2)
@@ -40,6 +40,10 @@ object Day3 {
                 .reduce { acc, curr -> acc.zip(curr).map { (accBit, currBit) -> accBit + currBit } }
 
         return Report(overallBitsCounts)
+    }
+
+    private fun part2(){
+
     }
 
     @JvmStatic
