@@ -2,7 +2,7 @@ package org.erueka84
 
 import org.erueka84.Common.readLines
 import org.erueka84.CommonBits.BitCounts
-import org.erueka84.CommonBits.asBinaryToInt
+import org.erueka84.CommonBits.binaryToInt
 
 object Day3Part1 {
     @JvmStatic
@@ -29,7 +29,7 @@ object Day3Part1 {
             get() = bitsToInt { bitCounts -> bitCounts.leastFrequent }
 
         private fun bitsToInt(bitSelector: (BitCounts) -> Char) =
-            String(bits.map(bitSelector).toCharArray()).asBinaryToInt()
+            String(bits.map(bitSelector).toCharArray()).binaryToInt()
 
         val powerConsumption: Int get() = gammaRate * epsilonRate
 
@@ -59,9 +59,9 @@ object Day3Part2 {
         position: Int = 0
     ): Int {
         val bit = selectBitValueFor(bitCountsAtGivenPosition(inputLines, position))
-        val filtered = inputLines.filter { it[position] == bit }
+        val filtered = inputLines.filter { line ->  line[position] == bit }
         if (filtered.size == 1) {
-            return filtered.first().asBinaryToInt()
+            return filtered.first().binaryToInt()
         } else {
             return computeRating(filtered, selectBitValueFor, position + 1)
         }
@@ -96,5 +96,5 @@ object CommonBits {
         }
     }
 
-    fun String.asBinaryToInt(): Int = this.toInt(2)
+    fun String.binaryToInt(): Int = this.toInt(2)
 }
