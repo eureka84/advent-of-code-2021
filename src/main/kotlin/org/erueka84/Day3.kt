@@ -9,7 +9,7 @@ object Day3Part1 {
     @JvmStatic
     fun main(args: Array<String>) {
         val inputLines = readLines("/day3.input")
-        println(diagnosticReport(inputLines).powerConsumption)
+        println(diagnosticReport(inputLines).powerConsumption) // 2035764
     }
 
     private fun diagnosticReport(inputLines: Sequence<String>): DiagnosticReport {
@@ -28,8 +28,8 @@ object Day3Part1 {
         private val epsilonRate: Int
             get() = bitsToInt { bitCounts -> bitCounts.leastFrequent }
 
-        private fun bitsToInt(bitSelector: (BitCounts) -> CharSequence) =
-            bits.joinToString(separator = "", transform = bitSelector).asBinaryToInt()
+        private fun bitsToInt(bitSelector: (BitCounts) -> Char) =
+            String(bits.map(bitSelector).toCharArray()).asBinaryToInt()
 
         val powerConsumption: Int get() = gammaRate * epsilonRate
 
@@ -41,7 +41,7 @@ object Day3Part2 {
     @JvmStatic
     fun main(args: Array<String>) {
         val inputLines = readLines("/day3.input").toList()
-        println(lifeSupportRating(inputLines).value)
+        println(lifeSupportRating(inputLines).value) // 2817661
     }
 
     private fun lifeSupportRating(inputLines: List<String>): LifeSupportRating {
@@ -49,20 +49,12 @@ object Day3Part2 {
     }
 
     private fun computeOxygenRating(inputLines: List<String>): Int {
-        return computeRating(inputLines, { bitCounts ->
-            if (bitCounts.oneCount >= bitCounts.zeroCount)
-                '1'
-            else
-                '0'
-        })
+        return computeRating(inputLines, { bitCounts -> bitCounts.mostFrequent })
     }
 
     private fun computeCO2Rating(inputLines: List<String>): Int {
         return computeRating(inputLines, { bitCounts ->
-            if (bitCounts.oneCount < bitCounts.zeroCount)
-                '1'
-            else
-                '0'
+            if (bitCounts.oneCount < bitCounts.zeroCount) '1' else '0'
         })
     }
 
@@ -90,8 +82,8 @@ object Day3Part2 {
 object CommonBits {
     data class BitCounts(val zeroCount: Int = 0, val oneCount: Int = 0) {
 
-        val mostFrequent: String = if (zeroCount > oneCount) "0" else "1"
-        val leastFrequent: String = if (zeroCount < oneCount) "0" else "1"
+        val mostFrequent: Char = if (oneCount >= zeroCount) '1' else '0'
+        val leastFrequent: Char = if (zeroCount < oneCount) '0' else '1'
 
         operator fun plus(other: BitCounts): BitCounts = BitCounts(
             zeroCount = zeroCount + other.zeroCount,
