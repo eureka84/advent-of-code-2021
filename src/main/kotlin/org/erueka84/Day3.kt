@@ -79,14 +79,14 @@ object Day3Part2 {
 }
 
 object CommonBits {
-    data class BitCounts(val zeroCount: Int = 0, val oneCount: Int = 0) {
+    data class BitCounts(val zerosCount: Int = 0, val onesCount: Int = 0) {
 
-        val mostFrequent: Char = if (oneCount >= zeroCount) '1' else '0'
-        val leastFrequent: Char = if (oneCount < zeroCount) '1' else '0'
+        val mostFrequent: Char = if (onesCount >= zerosCount) '1' else '0'
+        val leastFrequent: Char = if (onesCount < zerosCount) '1' else '0'
 
         operator fun plus(other: BitCounts): BitCounts = BitCounts(
-            zeroCount = zeroCount + other.zeroCount,
-            oneCount = oneCount + other.oneCount
+            zerosCount = zerosCount + other.zerosCount,
+            onesCount = onesCount + other.onesCount
         )
 
         companion object {
