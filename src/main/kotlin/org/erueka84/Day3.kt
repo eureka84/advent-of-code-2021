@@ -16,20 +16,20 @@ object Day3Part1 {
         val overallBitsCounts: List<BitCounts> =
             inputLines
                 .map { it.map(BitCounts::from) }
-                .reduce { acc, curr -> acc.zip(curr).map { (accBit, currBit) -> accBit + currBit } }
+                .reduce { acc, curr -> acc.zip(curr).map { (accBitCounts, lineBitCounts) -> accBitCounts + lineBitCounts } }
 
         return DiagnosticReport(overallBitsCounts)
     }
 
     class DiagnosticReport(private val bits: List<BitCounts>) {
         private val gamma: Int
-            get() = bitsStringToInt { bitCounts -> bitCounts.mostFrequent }
+            get() = bitsToInt { bitCounts -> bitCounts.mostFrequent }
 
         private val epsilon: Int
-            get() = bitsStringToInt { bitCounts -> bitCounts.leastFrequent }
+            get() = bitsToInt { bitCounts -> bitCounts.leastFrequent }
 
-        private fun bitsStringToInt(transform: (BitCounts) -> CharSequence) =
-            bits.joinToString(separator = "", transform = transform).asBinaryToInt()
+        private fun bitsToInt(bitSelector: (BitCounts) -> CharSequence) =
+            bits.joinToString(separator = "", transform = bitSelector).asBinaryToInt()
 
         val score: Int get() = gamma * epsilon
 
