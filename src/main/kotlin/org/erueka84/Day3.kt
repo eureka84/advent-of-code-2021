@@ -14,11 +14,12 @@ object Day3Part1 {
     private fun diagnosticReport(inputLines: Sequence<String>): DiagnosticReport =
         DiagnosticReport(computeOverallBitCounts(inputLines))
 
-    private fun computeOverallBitCounts(inputLines: Sequence<String>) = inputLines
-        .map { it.map(BitCounts::from) }
-        .reduce { acc, curr ->
-            acc.zip(curr).map { (accBitCounts, lineBitCounts) -> accBitCounts + lineBitCounts }
-        }
+    private fun computeOverallBitCounts(inputLines: Sequence<String>) =
+        inputLines
+            .map { it.map(BitCounts::from) }
+            .reduce { acc, curr ->
+                acc.zip(curr).map { (accBitCounts, lineBitCounts) -> accBitCounts + lineBitCounts }
+            }
 
     class DiagnosticReport(private val bits: List<BitCounts>) {
         private val gammaRate: Int
