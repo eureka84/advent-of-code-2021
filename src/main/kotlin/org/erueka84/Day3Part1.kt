@@ -2,7 +2,7 @@ package org.erueka84
 
 import org.erueka84.Common.readLines
 
-object Day3 {
+object Day3Part1 {
 
     data class BitCounts(val zeroCount: Int = 0, val oneCount: Int = 0) {
 
@@ -33,21 +33,35 @@ object Day3 {
         val score: Int get() = gamma * epsilon
     }
 
-    private fun part1(): Report {
+    private fun compute(inputLines: Sequence<String>): Report {
         val overallBitsCounts: List<BitCounts> =
-            readLines("/day3.input")
+            inputLines
                 .map { it.map(BitCounts::from) }
                 .reduce { acc, curr -> acc.zip(curr).map { (accBit, currBit) -> accBit + currBit } }
 
         return Report(overallBitsCounts)
     }
 
-    private fun part2(){
-
+    @JvmStatic
+    fun main(args: Array<String>) {
+        val inputLines = readLines("/day3.input")
+        println(compute(inputLines).score)
     }
+}
+
+object Day3Part2 {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        println(part1().score)
+        val inputLines = readLines("/day3.input")
+        println(compute(inputLines).score())
+    }
+
+    private fun compute(inputLines: Sequence<String>): Result {
+        TODO()
+    }
+
+    class Result {
+        fun score(): Int = TODO()
     }
 }
