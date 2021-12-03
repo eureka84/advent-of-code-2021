@@ -3,5 +3,6 @@
 package org.erueka84
 
 object Common {
-    fun readLines(file: String) = object {}::class.java.getResource(file).readText().lineSequence()
+    fun readLines(file: String): Sequence<String> =
+        object {}::class.java.getResource(file).readText().lineSequence()
 }
