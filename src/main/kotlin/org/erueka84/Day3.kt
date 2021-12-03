@@ -2,7 +2,6 @@ package org.erueka84
 
 import org.erueka84.Common.readLines
 import org.erueka84.CommonBits.BitCounts
-import org.erueka84.CommonBits.BitCounts.Companion.toBitCount
 import org.erueka84.CommonBits.asBinaryToInt
 
 object Day3Part1 {
@@ -12,14 +11,14 @@ object Day3Part1 {
         println(diagnosticReport(inputLines).powerConsumption) // 2035764
     }
 
-    private fun diagnosticReport(inputLines: Sequence<String>): DiagnosticReport {
-        val overallBitsCounts: List<BitCounts> =
-            inputLines
-                .map { it.map(BitCounts::from) }
-                .reduce { acc, curr -> acc.zip(curr).map { (accBitCounts, lineBitCounts) -> accBitCounts + lineBitCounts } }
+    private fun diagnosticReport(inputLines: Sequence<String>): DiagnosticReport =
+        DiagnosticReport(computeOverallBitCounts(inputLines))
 
-        return DiagnosticReport(overallBitsCounts)
-    }
+    private fun computeOverallBitCounts(inputLines: Sequence<String>) = inputLines
+        .map { it.map(BitCounts::from) }
+        .reduce { acc, curr ->
+            acc.zip(curr).map { (accBitCounts, lineBitCounts) -> accBitCounts + lineBitCounts }
+        }
 
     class DiagnosticReport(private val bits: List<BitCounts>) {
         private val gammaRate: Int
@@ -44,30 +43,33 @@ object Day3Part2 {
         println(lifeSupportRating(inputLines).value) // 2817661
     }
 
-    private fun lifeSupportRating(inputLines: List<String>): LifeSupportRating {
-        return LifeSupportRating(computeOxygenRating(inputLines), computeCO2Rating(inputLines))
-    }
+    private fun lifeSupportRating(inputLines: List<String>): LifeSupportRating =
+        LifeSupportRating(computeOxygenRating(inputLines), computeCO2Rating(inputLines))
 
     private fun computeOxygenRating(inputLines: List<String>): Int =
         computeRating(inputLines, { bitCounts -> bitCounts.mostFrequent })
 
     private fun computeCO2Rating(inputLines: List<String>): Int =
-        computeRating(inputLines, { bitCounts -> bitCounts.leastFrequent})
+        computeRating(inputLines, { bitCounts -> bitCounts.leastFrequent })
 
     private tailrec fun computeRating(
         inputLines: List<String>,
-        bitValueSelection: (BitCounts) -> Char,
+        selectBitValueFor: (BitCounts) -> Char,
         position: Int = 0
-    ): Int{
-        val bitCountsAtGivenPosition = inputLines.map { it[position].toBitCount() }.reduce(BitCounts::plus)
-        val bit = bitValueSelection(bitCountsAtGivenPosition)
+    ): Int {
+        val bit = selectBitValueFor(bitCountsAtGivenPosition(inputLines, position))
         val filtered = inputLines.filter { it[position] == bit }
         if (filtered.size == 1) {
             return filtered.first().asBinaryToInt()
         } else {
-            return computeRating(filtered, bitValueSelection, position + 1)
+            return computeRating(filtered, selectBitValueFor, position + 1)
         }
     }
+
+    private fun bitCountsAtGivenPosition(inputLines: List<String>, position: Int) =
+        inputLines
+            .map { line -> BitCounts.from(line[position]) }
+            .reduce(BitCounts::plus)
 
     data class LifeSupportRating(val oxygenRating: Int, val co2Rating: Int) {
         val value: Int get() = oxygenRating * co2Rating
@@ -90,7 +92,6 @@ object CommonBits {
             fun from(c: Char): BitCounts =
                 if (c == '0') BitCounts(1, 0) else BitCounts(0, 1)
 
-            fun Char.toBitCount(): BitCounts = from(this)
         }
     }
 
