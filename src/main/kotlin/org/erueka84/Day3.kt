@@ -9,7 +9,7 @@ object Day3Part1 {
     @JvmStatic
     fun main(args: Array<String>) {
         val inputLines = readLines("/day3.input")
-        println(diagnosticReport(inputLines).score)
+        println(diagnosticReport(inputLines).powerConsumption)
     }
 
     private fun diagnosticReport(inputLines: Sequence<String>): DiagnosticReport {
@@ -22,16 +22,16 @@ object Day3Part1 {
     }
 
     class DiagnosticReport(private val bits: List<BitCounts>) {
-        private val gamma: Int
+        private val gammaRate: Int
             get() = bitsToInt { bitCounts -> bitCounts.mostFrequent }
 
-        private val epsilon: Int
+        private val epsilonRate: Int
             get() = bitsToInt { bitCounts -> bitCounts.leastFrequent }
 
         private fun bitsToInt(bitSelector: (BitCounts) -> CharSequence) =
             bits.joinToString(separator = "", transform = bitSelector).asBinaryToInt()
 
-        val score: Int get() = gamma * epsilon
+        val powerConsumption: Int get() = gammaRate * epsilonRate
 
     }
 
