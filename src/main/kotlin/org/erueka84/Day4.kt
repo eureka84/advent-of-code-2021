@@ -11,20 +11,20 @@ object Day4 {
 
     private fun solve(): Pair<Int?, Int?> {
         val input = readLines("/day4.input").toList()
-        val numbers = sequenceOfExtractedNumbers(input)
-        val game = initializeGame(input.drop(2))
+        val numbers = parseSequenceOfExtractedNumbers(input)
+        val game = parseGame(input.drop(2))
         numbers.forEach { n ->
             game.draw(n)
         }
-        return Pair(game.firstWinnerScore(), game.lastWinnerScore())
+        return Pair(game.firstWinnerScore, game.lastWinnerScore)
     }
 
-    private fun initializeGame(inputs: List<String>): Game {
+    private fun parseGame(inputs: List<String>): Game {
         val boards = inputs.windowed(5, 6).map(Board::from)
         return Game(boards)
     }
 
-    private fun sequenceOfExtractedNumbers(input: List<String>) =
+    private fun parseSequenceOfExtractedNumbers(input: List<String>) =
         input[0].split(",").map { it.toInt() }
 
     data class BoardNumber(val value: Int, var marked: Boolean = false) {
@@ -38,7 +38,7 @@ object Day4 {
     }
 
     data class Board(val rows: List<List<BoardNumber>>) {
-        private lateinit var callback: (Board) -> Unit
+        private lateinit var bingoCallback: (Board) -> Unit
         private var gotBingo = false
         private val columns: Array<Array<BoardNumber>> = Array(5) { i ->
             Array(5) { j ->
@@ -46,13 +46,13 @@ object Day4 {
             }
         }
 
+        fun registerBingoCallBack(callback: (Board) -> Unit) {
+            this.bingoCallback = callback
+        }
+
         fun mark(n: Int) {
             if (!gotBingo) {
-                rows.forEach { row ->
-                    row.forEach { boardNumber ->
-                        boardNumber.markIfIs(n)
-                    }
-                }
+                rows.forEach { row -> row.forEach { boardNumber -> boardNumber.markIfIs(n) } }
                 checkBingo()
             }
         }
@@ -60,17 +60,13 @@ object Day4 {
         private fun checkBingo() {
             if (anyRowFullyMarked() || anyColumnsFullyMarked()) {
                 gotBingo = true
-                callback(this)
+                bingoCallback(this)
             }
         }
 
         private fun anyColumnsFullyMarked() = columns.any { it.all { it.marked } }
 
         private fun anyRowFullyMarked() = rows.any { it.all { it.marked } }
-
-        fun registerBingoCallBack(callback: (Board) -> Unit) {
-            this.callback = callback
-        }
 
         fun score(): Int {
             return rows.flatten().filter { !it.marked }.sumOf { it.value }
@@ -97,6 +93,9 @@ object Day4 {
         private var _lastWinnerScore: Int? = null
         private var drawnNumbers = ArrayDeque<Int>()
 
+        val firstWinnerScore get() = _firstWinnerScore
+        val lastWinnerScore get() = _lastWinnerScore
+
         fun draw(n: Int) {
             drawnNumbers.addFirst(n)
             boards.forEach { board -> board.mark(n) }
@@ -108,14 +107,6 @@ object Day4 {
                 _firstWinnerScore = score
             }
             _lastWinnerScore = score
-        }
-
-        fun firstWinnerScore(): Int? {
-            return _firstWinnerScore
-        }
-
-        fun lastWinnerScore(): Int? {
-            return _lastWinnerScore
         }
     }
 }
