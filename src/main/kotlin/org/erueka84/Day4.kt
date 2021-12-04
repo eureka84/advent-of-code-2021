@@ -55,11 +55,11 @@ object Day4 {
     data class Card(val rows: List<List<CardNumber>>) {
 
         private val columns: Array<Array<CardNumber>> = Array(5) { i -> Array(5) { j -> rows[j][i] } }
-        private lateinit var bingoCallback: (Card) -> Unit
+        private lateinit var callBingo: (Card) -> Unit
         private var gotBingo = false
 
         fun registerBingoCallBack(callback: (Card) -> Unit) {
-            this.bingoCallback = callback
+            this.callBingo = callback
         }
 
         fun onDrawn(n: Int) {
@@ -67,7 +67,7 @@ object Day4 {
                 rows.forEach { row -> row.forEach { cardNumber -> cardNumber.onDrawn(n) } }
                 if (anyRowFullyDrawn() || anyColumnFullyDrawn()) {
                     gotBingo = true
-                    bingoCallback(this)
+                    callBingo(this)
                 }
             }
         }
