@@ -28,25 +28,23 @@ object Day4 {
         input[0].split(",").map { it.toInt() }
 
     data class Game(val boards: List<Board>) {
-
         init {
             boards.forEach { b -> b.registerBingoCallBack(this::bingo) }
         }
+        private var drawnNumbers = ArrayDeque<Int>()
 
         private var _firstWinnerScore: Int? = null
         private var _lastWinnerScore: Int? = null
-        private var drawnNumbers = ArrayDeque<Int>()
-
         val firstWinnerScore get() = _firstWinnerScore
         val lastWinnerScore get() = _lastWinnerScore
 
         fun draw(n: Int) {
-            drawnNumbers.addFirst(n)
+            drawnNumbers.add(n)
             boards.forEach { board -> board.onDraw(n) }
         }
 
         private fun bingo(board: Board) {
-            val score = board.score() * drawnNumbers.first()
+            val score = board.score() * drawnNumbers.last()
             if (_firstWinnerScore == null) {
                 _firstWinnerScore = score
             }
