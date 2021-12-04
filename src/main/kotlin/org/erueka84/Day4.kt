@@ -11,7 +11,7 @@ object Day4 {
 
     private fun solve(): Pair<Int?, Int?> {
         val input = readLines("/day4.input").toList()
-        val numbers = parseSequenceOfDrawnNumbers(input)
+        val numbers = parseSequenceOfDrawnNumbers(input[0])
         val game = parseGame(input.drop(2))
         numbers.forEach { n ->
             game.draw(n)
@@ -19,8 +19,8 @@ object Day4 {
         return Pair(game.firstWinnerScore, game.lastWinnerScore)
     }
 
-    private fun parseSequenceOfDrawnNumbers(input: List<String>) =
-        input[0].split(",").map { it.toInt() }
+    private fun parseSequenceOfDrawnNumbers(s: String) =
+        s.split(",").map { it.toInt() }
 
     private fun parseGame(inputs: List<String>): BingoGame {
         val cards = inputs.windowed(5, 6).map(Card::from)
