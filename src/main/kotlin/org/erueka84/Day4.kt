@@ -12,7 +12,7 @@ object Day4 {
     private fun solve(): Pair<Int?, Int?> {
         val input = readLines("/day4.input").toList()
         val numbers = parseSequenceOfDrawnNumbers(input[0])
-        val game = parseGame(input.drop(2))
+        val game = BingoGame.from(input.drop(2))
         numbers.forEach { n ->
             game.draw(n)
         }
@@ -22,16 +22,11 @@ object Day4 {
     private fun parseSequenceOfDrawnNumbers(s: String) =
         s.split(",").map { it.toInt() }
 
-    private fun parseGame(inputs: List<String>): BingoGame {
-        val cards = inputs.windowed(5, 6).map(Card::from)
-        return BingoGame(cards)
-    }
-
     data class BingoGame(private val cards: List<Card>) {
         init {
             cards.forEach { b -> b.registerBingoCallBack(this::bingo) }
         }
-        private var drawnNumbers = ArrayDeque<Int>()
+        private val drawnNumbers = ArrayDeque<Int>()
 
         private var _firstWinnerScore: Int? = null
         private var _lastWinnerScore: Int? = null
@@ -49,6 +44,13 @@ object Day4 {
                 _firstWinnerScore = score
             }
             _lastWinnerScore = score
+        }
+
+        companion object {
+            fun from(inputs: List<String>): BingoGame {
+                val cards = inputs.windowed(5, 6).map(Card::from)
+                return BingoGame(cards)
+            }
         }
     }
 
