@@ -27,7 +27,7 @@ object Day4 {
         return BingoGame(cards)
     }
 
-    data class BingoGame(val cards: List<Card>) {
+    data class BingoGame(private val cards: List<Card>) {
         init {
             cards.forEach { b -> b.registerBingoCallBack(this::bingo) }
         }
@@ -52,7 +52,7 @@ object Day4 {
         }
     }
 
-    data class Card(val rows: List<List<CardNumber>>) {
+    data class Card(private val rows: List<List<CardNumber>>) {
 
         private val columns: Array<Array<CardNumber>> = Array(5) { i -> Array(5) { j -> rows[j][i] } }
         private lateinit var callBingo: (Card) -> Unit
