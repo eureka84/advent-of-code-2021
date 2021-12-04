@@ -6,7 +6,7 @@ object Day4 {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        println(solve())
+        println(solve()) // (16674, 7075)
     }
 
     private fun solve(): Pair<Int?, Int?> {
@@ -22,14 +22,14 @@ object Day4 {
     private fun parseSequenceOfDrawnNumbers(input: List<String>) =
         input[0].split(",").map { it.toInt() }
 
-    private fun parseGame(inputs: List<String>): Game {
-        val boards = inputs.windowed(5, 6).map(Board::from)
-        return Game(boards)
+    private fun parseGame(inputs: List<String>): BingoGame {
+        val cards = inputs.windowed(5, 6).map(Card::from)
+        return BingoGame(cards)
     }
 
-    data class Game(val boards: List<Board>) {
+    data class BingoGame(val cards: List<Card>) {
         init {
-            boards.forEach { b -> b.registerBingoCallBack(this::bingo) }
+            cards.forEach { b -> b.registerBingoCallBack(this::bingo) }
         }
         private var drawnNumbers = ArrayDeque<Int>()
 
@@ -40,11 +40,11 @@ object Day4 {
 
         fun draw(n: Int) {
             drawnNumbers.add(n)
-            boards.forEach { board -> board.onDraw(n) }
+            cards.forEach { board -> board.onDrawn(n) }
         }
 
-        private fun bingo(board: Board) {
-            val score = board.score() * drawnNumbers.last()
+        private fun bingo(card: Card) {
+            val score = card.score() * drawnNumbers.last()
             if (_firstWinnerScore == null) {
                 _firstWinnerScore = score
             }
@@ -52,27 +52,23 @@ object Day4 {
         }
     }
 
-    data class Board(val rows: List<List<BoardNumber>>) {
+    data class Card(val rows: List<List<CardNumber>>) {
 
-        private val columns: Array<Array<BoardNumber>> = Array(5) { i -> Array(5) { j -> rows[j][i] } }
-        private lateinit var bingoCallback: (Board) -> Unit
+        private val columns: Array<Array<CardNumber>> = Array(5) { i -> Array(5) { j -> rows[j][i] } }
+        private lateinit var bingoCallback: (Card) -> Unit
         private var gotBingo = false
 
-        fun registerBingoCallBack(callback: (Board) -> Unit) {
+        fun registerBingoCallBack(callback: (Card) -> Unit) {
             this.bingoCallback = callback
         }
 
-        fun onDraw(n: Int) {
+        fun onDrawn(n: Int) {
             if (!gotBingo) {
-                rows.forEach { row -> row.forEach { boardNumber -> boardNumber.markDrawnIfIs(n) } }
-                checkBingo()
-            }
-        }
-
-        private fun checkBingo() {
-            if (anyRowFullyDrawn() || anyColumnFullyDrawn()) {
-                gotBingo = true
-                bingoCallback(this)
+                rows.forEach { row -> row.forEach { cardNumber -> cardNumber.onDrawn(n) } }
+                if (anyRowFullyDrawn() || anyColumnFullyDrawn()) {
+                    gotBingo = true
+                    bingoCallback(this)
+                }
             }
         }
 
@@ -80,28 +76,26 @@ object Day4 {
 
         private fun anyRowFullyDrawn() = rows.any { row -> row.all { number -> number.drawn } }
 
-        fun score(): Int {
-            return rows.flatten().filter { !it.drawn }.sumOf { it.value }
-        }
+        fun score(): Int = rows.flatten().filter { !it.drawn }.sumOf { it.value }
 
         companion object {
-            fun from(rawBoardRows: List<String>): Board {
-                val rows = rawBoardRows.map {
+            fun from(rawCardRows: List<String>): Card {
+                val rows = rawCardRows.map {
                     val rawNumbers = it.trim().split("\\s+".toRegex())
-                    rawNumbers.map(BoardNumber::from)
+                    rawNumbers.map(CardNumber::from)
                 }
-                return Board(rows)
+                return Card(rows)
             }
         }
     }
 
-    data class BoardNumber(val value: Int, var drawn: Boolean = false) {
-        fun markDrawnIfIs(n: Int) {
+    data class CardNumber(val value: Int, var drawn: Boolean = false) {
+        fun onDrawn(n: Int) {
             if (value == n) drawn = true
         }
 
         companion object {
-            fun from(rawNumber: String): BoardNumber = BoardNumber(rawNumber.toInt())
+            fun from(rawNumber: String): CardNumber = CardNumber(rawNumber.toInt())
         }
     }
 }
