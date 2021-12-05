@@ -1,11 +1,13 @@
 package org.erueka84
 
 import org.erueka84.Common.readLines
-import kotlin.math.abs
+import org.erueka84.MathLib.Fraction
 import kotlin.math.max
 import kotlin.math.min
 
 object Day5 {
+
+    private val SEGMENT_PATTERN = "(\\d+,\\d+)\\s->\\s(\\d+,\\d+)".toRegex()
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -27,13 +29,12 @@ object Day5 {
 
     data class Grid(val segments: List<Segment>) {
 
-        fun findHotSpots(): Set<Point> {
-            return segments
+        fun findHotSpots(): Set<Point> =
+            segments
                 .flatMap { it.getAllContainedPoints().toList() }
                 .groupBy { it }
                 .filter { (_, v) -> v.size >= 2 }
                 .keys
-        }
 
         companion object {
             fun from(segments: List<Segment>): Grid {
@@ -42,89 +43,70 @@ object Day5 {
         }
     }
 
-    private fun parseSegments(input: Sequence<String>): List<Segment> {
-        val regex = "(\\d+,\\d+)\\s->\\s(\\d+,\\d+)".toRegex()
-        return input.toList().map { line ->
-            val (_, p0, p1) = regex.matchEntire(line)?.groupValues!!
+    private fun parseSegments(input: Sequence<String>): List<Segment> =
+        input.toList().map { line ->
+            val (_, p0, p1) = SEGMENT_PATTERN.matchEntire(line)?.groupValues!!
             Segment.from(Point.from(p0), Point.from(p1))
+        }
+
+
+    sealed class Segment {
+        abstract val isVertical: Boolean
+        abstract val isHorizontal: Boolean
+        abstract fun getAllContainedPoints(): List<Point>
+
+        companion object {
+            fun from(p0: Point, p1: Point): Segment = when {
+                p0.y == p1.y -> HorizontalSegment.from(p0.x, p1.x, p0.y)
+                p0.x == p1.x -> VerticalSegment.from(p0.x, p0.y, p1.y)
+                else -> DiagonalSegment.from(p0, p1)
+            }
         }
     }
 
-    data class Segment(val p0: Point, val p1: Point) {
-
-        val isVertical: Boolean = p0.x == p1.x
-        val isHorizontal: Boolean = p0.y == p1.y
-
-        fun getAllContainedPoints(): Set<Point> {
-            val (numerator, denominator) = p0.inclinationTO(p1)
-
-            return when {
-                numerator == 0 ->
-                    (p0.x..p1.x).map { Point(it, p0.y) }.toSet()
-                numerator > 0 && denominator == 0 ->
-                    (p0.y..p1.y).map { Point(p0.x, it) }.toSet()
-                numerator < 0 && denominator == 0 ->
-                    (p0.y downTo p1.y).map { Point(p0.x, it) }.toSet()
-                numerator > 0 ->
-                    (p0.y..p1.y step numerator).zip((p0.x..p1.x step denominator)).map { (y, x) -> Point(x, y) }.toSet()
-                numerator < 0 ->
-                    (p0.y downTo p1.y step (-numerator)).zip((p0.x..p1.x step denominator))
-                        .map { (y, x) -> Point(x, y) }.toSet()
-                else -> setOf(p0, p1)
-            }
-        }
-
-        fun covers(point: Point): Boolean =
-            p0.inclinationTO(p1) == p0.inclinationTO(point) && point.liesBetween(p0, p1)
+    data class HorizontalSegment(val x1: Int, val x2: Int, val y: Int) : Segment() {
+        override val isHorizontal: Boolean = true
+        override val isVertical: Boolean = false
+        override fun getAllContainedPoints(): List<Point> = (x1..x2).map { Point(it, y) }
 
         companion object {
-            fun from(a: Point, b: Point): Segment =
-                if (a.x < b.x)
-                    Segment(a, b)
-                else
-                    Segment(b, a)
+            fun from(x1: Int, x2: Int, y: Int) = HorizontalSegment(min(x1, x2), max(x1, x2), y)
+        }
+    }
+
+    data class VerticalSegment(val x: Int, val y1: Int, val y2: Int) : Segment() {
+        override val isHorizontal: Boolean = false
+        override val isVertical: Boolean = true
+        override fun getAllContainedPoints(): List<Point> = (y1..y2).map { Point(x, it) }
+
+        companion object {
+            fun from(x: Int, y1: Int, y2: Int) = VerticalSegment(x, min(y1, y2), max(y1, y2))
+        }
+    }
+
+    data class DiagonalSegment(val p0: Point, val p1: Point) : Segment() {
+        override val isHorizontal: Boolean = false
+        override val isVertical: Boolean = false
+        override fun getAllContainedPoints(): List<Point> {
+            val (numerator, denominator) = p0.inclinationTO(p1)
+            val yRange = if (numerator > 0) (p0.y..p1.y step numerator) else (p0.y downTo p1.y step (-numerator))
+            val xRange = p0.x..p1.x step denominator
+            return xRange.zip(yRange).map { (x, y) -> Point(x, y) }
+        }
+
+        companion object {
+            fun from(p0: Point, p1: Point): DiagonalSegment =
+                if (p0.x < p1.x) DiagonalSegment(p0, p1) else DiagonalSegment(p1, p0)
         }
     }
 
     data class Point(val x: Int, val y: Int) {
-        fun inclinationTO(other: Point): Fraction = Fraction.from(other.y - this.y, other.x - this.x)
-        fun liesBetween(p0: Point, p1: Point): Boolean {
-            val minX = min(p0.x, p1.x)
-            val minY = min(p0.y, p1.y)
-            val maxX = max(p0.x, p1.x)
-            val maxY = max(p0.y, p1.y)
-            return x in (minX..maxX) && y in (minY..maxY)
-        }
+        fun inclinationTO(other: Point): Fraction =
+            Fraction.from(other.y - this.y, other.x - this.x)
 
         companion object {
             fun from(s: String): Point = s.split(",").let { (x, y) -> Point(x.toInt(), y.toInt()) }
         }
-    }
-
-    data class Fraction(val numerator: Int, val denominator: Int) {
-        companion object {
-            fun from(numerator: Int, denominator: Int): Fraction =
-                if (numerator == 0 || denominator == 0) {
-                    Fraction(numerator, denominator)
-                } else {
-                    val gcd = gcd(numerator, denominator)
-                    Fraction(numerator / gcd, denominator / gcd)
-                }
-        }
-    }
-
-
-    private fun gcd(a: Int, b: Int): Int {
-        var x = abs(a)
-        var y = abs(b)
-        while (x != y) {
-            if (x > y) {
-                x -= y
-            } else {
-                y -= x
-            }
-        }
-        return x
     }
 
 }
