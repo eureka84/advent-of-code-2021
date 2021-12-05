@@ -88,7 +88,7 @@ object Day5 {
         override val isHorizontal: Boolean = false
         override val isVertical: Boolean = false
         override fun getAllContainedPoints(): List<Point> {
-            val (numerator, denominator) = p0.inclinationTO(p1)
+            val (numerator, denominator) = p0.inclinationTo(p1)
             val yRange = if (numerator > 0) (p0.y..p1.y step numerator) else (p0.y downTo p1.y step (-numerator))
             val xRange = p0.x..p1.x step denominator
             return xRange.zip(yRange).map { (x, y) -> Point(x, y) }
@@ -101,7 +101,7 @@ object Day5 {
     }
 
     data class Point(val x: Int, val y: Int) {
-        fun inclinationTO(other: Point): Fraction =
+        fun inclinationTo(other: Point): Fraction =
             Fraction.from(other.y - this.y, other.x - this.x)
 
         companion object {
