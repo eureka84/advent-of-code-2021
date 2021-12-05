@@ -64,7 +64,7 @@ object Day5 {
         }
     }
 
-    data class HorizontalSegment(val x1: Int, val x2: Int, val y: Int) : Segment() {
+    data class HorizontalSegment internal constructor(val x1: Int, val x2: Int, val y: Int) : Segment() {
         override val isHorizontal: Boolean = true
         override val isVertical: Boolean = false
         override fun getAllContainedPoints(): List<Point> = (x1..x2).map { Point(it, y) }
@@ -74,7 +74,7 @@ object Day5 {
         }
     }
 
-    data class VerticalSegment(val x: Int, val y1: Int, val y2: Int) : Segment() {
+    data class VerticalSegment internal constructor(val x: Int, val y1: Int, val y2: Int) : Segment() {
         override val isHorizontal: Boolean = false
         override val isVertical: Boolean = true
         override fun getAllContainedPoints(): List<Point> = (y1..y2).map { Point(x, it) }
@@ -84,7 +84,7 @@ object Day5 {
         }
     }
 
-    data class DiagonalSegment(val p0: Point, val p1: Point) : Segment() {
+    data class DiagonalSegment internal constructor(val p0: Point, val p1: Point) : Segment() {
         override val isHorizontal: Boolean = false
         override val isVertical: Boolean = false
         override fun getAllContainedPoints(): List<Point> {
