@@ -7,7 +7,7 @@ import kotlin.math.min
 
 object Day5 {
 
-    private val SEGMENT_PATTERN = "(\\d+,\\d+)\\s->\\s(\\d+,\\d+)".toRegex()
+    private val SEGMENT_LINE_PATTERN = "(\\d+,\\d+)\\s->\\s(\\d+,\\d+)".toRegex()
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -45,7 +45,7 @@ object Day5 {
 
     private fun parseSegments(input: Sequence<String>): List<Segment> =
         input.toList().map { line ->
-            val (_, p0, p1) = SEGMENT_PATTERN.matchEntire(line)?.groupValues!!
+            val (_, p0, p1) = SEGMENT_LINE_PATTERN.matchEntire(line)?.groupValues!!
             Segment.from(Point.from(p0), Point.from(p1))
         }
 
