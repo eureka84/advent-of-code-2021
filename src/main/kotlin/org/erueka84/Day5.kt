@@ -29,12 +29,14 @@ object Day5 {
 
     data class Grid(val segments: List<Segment>) {
 
-        fun findHotSpots(): Set<Point> =
-            segments
+        fun findHotSpots(): Set<Point> {
+            return segments
                 .flatMap { it.getAllContainedPoints().toList() }
-                .groupBy { it }
-                .filter { (_, v) -> v.size >= 2 }
+                .groupingBy { it }
+                .eachCount()
+                .filter { (_, v) -> v >= 2 }
                 .keys
+        }
 
         companion object {
             fun from(segments: List<Segment>): Grid {
