@@ -66,8 +66,7 @@ object Day6Part2 {
             sea.onDayPassed()
         }
 
-        val fishPopulation = sea.fishPopulation
-        return fishPopulation
+        return sea.fishPopulation
     }
 
     private fun initializeSea(lines: Sequence<String>): Sea {
