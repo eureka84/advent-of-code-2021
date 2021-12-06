@@ -55,6 +55,10 @@ object Day6Part1 {
 object Day6Part2 {
     @JvmStatic
     fun main(args: Array<String>) {
+        println(part2()) // 1631647919273
+    }
+
+    private fun part2(): Long {
         val lines = readLines("/day6.input")
         val sea = initializeSea(lines)
 
@@ -62,7 +66,8 @@ object Day6Part2 {
             sea.onDayPassed()
         }
 
-        println(sea.fishPopulation)
+        val fishPopulation = sea.fishPopulation
+        return fishPopulation
     }
 
     private fun initializeSea(lines: Sequence<String>): Sea {
