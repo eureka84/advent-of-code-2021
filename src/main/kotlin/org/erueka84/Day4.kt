@@ -22,9 +22,9 @@ object Day4 {
     private fun parseSequenceOfDrawnNumbers(s: String) =
         s.split(",").map { it.toInt() }
 
-    data class BingoGame(private val cards: List<Card>) {
+    data class BingoGame(private val boards: List<Board>) {
         init {
-            cards.forEach { b -> b.registerBingoCallBack(this::bingo) }
+            boards.forEach { b -> b.registerBingoCallBack(this::bingo) }
         }
         private val drawnNumbers = ArrayDeque<Int>()
 
@@ -35,11 +35,11 @@ object Day4 {
 
         fun draw(n: Int) {
             drawnNumbers.add(n)
-            cards.forEach { board -> board.onDrawn(n) }
+            boards.forEach { board -> board.onDrawn(n) }
         }
 
-        private fun bingo(card: Card) {
-            val score = card.score() * drawnNumbers.last()
+        private fun bingo(board: Board) {
+            val score = board.score() * drawnNumbers.last()
             if (_firstWinnerScore == null) {
                 _firstWinnerScore = score
             }
@@ -48,25 +48,25 @@ object Day4 {
 
         companion object {
             fun from(inputs: List<String>): BingoGame {
-                val cards = inputs.windowed(5, 6).map(Card::from)
-                return BingoGame(cards)
+                val boards = inputs.windowed(5, 6).map(Board::from)
+                return BingoGame(boards)
             }
         }
     }
 
-    data class Card(private val rows: List<List<CardNumber>>) {
+    data class Board(private val rows: List<List<BoardNumber>>) {
 
-        private val columns: Array<Array<CardNumber>> = Array(5) { i -> Array(5) { j -> rows[j][i] } }
-        private lateinit var callBingo: (Card) -> Unit
+        private val columns: Array<Array<BoardNumber>> = Array(5) { i -> Array(5) { j -> rows[j][i] } }
+        private lateinit var callBingo: (Board) -> Unit
         private var gotBingo = false
 
-        fun registerBingoCallBack(callback: (Card) -> Unit) {
+        fun registerBingoCallBack(callback: (Board) -> Unit) {
             this.callBingo = callback
         }
 
         fun onDrawn(n: Int) {
             if (!gotBingo) {
-                rows.forEach { row -> row.forEach { cardNumber -> cardNumber.onDrawn(n) } }
+                rows.forEach { row -> row.forEach { boardNumber -> boardNumber.onDrawn(n) } }
                 if (anyRowFullyDrawn() || anyColumnFullyDrawn()) {
                     gotBingo = true
                     callBingo(this)
@@ -81,23 +81,23 @@ object Day4 {
         fun score(): Int = rows.flatten().filter { !it.drawn }.sumOf { it.value }
 
         companion object {
-            fun from(rawCardRows: List<String>): Card {
-                val rows = rawCardRows.map {
+            fun from(rawBoardRows: List<String>): Board {
+                val rows = rawBoardRows.map {
                     val rawNumbers = it.trim().split("\\s+".toRegex())
-                    rawNumbers.map(CardNumber::from)
+                    rawNumbers.map(BoardNumber::from)
                 }
-                return Card(rows)
+                return Board(rows)
             }
         }
     }
 
-    data class CardNumber(val value: Int, var drawn: Boolean = false) {
+    data class BoardNumber(val value: Int, var drawn: Boolean = false) {
         fun onDrawn(n: Int) {
             if (value == n) drawn = true
         }
 
         companion object {
-            fun from(rawNumber: String): CardNumber = CardNumber(rawNumber.toInt())
+            fun from(rawNumber: String): BoardNumber = BoardNumber(rawNumber.toInt())
         }
     }
 }
