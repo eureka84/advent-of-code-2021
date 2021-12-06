@@ -87,7 +87,7 @@ object Day6Part2 {
         fun onDayPassed() {
             val newGeneration = Array<Long>(9) { 0 }
             (0..7).forEach { generation ->
-                newGeneration[generation] = lanternFishGenerations[generation+1]
+                newGeneration[generation] = lanternFishGenerations[generation + 1]
             }
             newGeneration[8] = lanternFishGenerations[0]
             newGeneration[6] += lanternFishGenerations[0]
