@@ -31,7 +31,7 @@ object Day5 {
 
         fun findHotSpots(): Set<Point> {
             return segments
-                .flatMap { it.getAllContainedPoints().toList() }
+                .flatMap { it.getAllContainedPoints() }
                 .groupingBy { it }
                 .eachCount()
                 .filter { (_, v) -> v >= 2 }
