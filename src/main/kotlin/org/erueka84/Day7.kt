@@ -15,10 +15,8 @@ object Day7 {
         println(part2(positions)) // 93006301
     }
 
-    private fun readInitialCrabsPositions(): List<Int> {
-        val input = readLines("/day7.input")
-        return input.first().split(",").map { it.toInt() }
-    }
+    private fun readInitialCrabsPositions(): List<Int> =
+        readLines("/day7.input").first().split(",").map { it.toInt() }
 
     private fun part1(positions: List<Int>): Int =
         positions
