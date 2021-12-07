@@ -33,9 +33,9 @@ object MathLib {
             return gcd(x, y - x)
     }
 
-    fun sumOfFirstNaturalsUpTo(n: Int): Int = n * (n + 1) / 2
+    fun sumOfAllNaturalsUpTo(n: Int): Int = n * (n + 1) / 2
 
-    fun Int.triangular() = sumOfFirstNaturalsUpTo(this)
+    fun Int.triangular() = sumOfAllNaturalsUpTo(this)
 
     fun List<Int>.mean(): Int = this.sum() / this.size
 
