@@ -22,7 +22,7 @@ object MathLib {
         }
     }
 
-    private fun gcd(a: Int, b: Int): Int {
+    fun gcd(a: Int, b: Int): Int {
         var x = abs(a)
         var y = abs(b)
         while (x != y) {
@@ -34,4 +34,19 @@ object MathLib {
         }
         return x
     }
+
+    fun sumOfFirst(n: Int): Int = n * (n + 1) / 2
+
+    fun List<Int>.mean(): Int = this.sum()/ this.size
+
+    fun List<Int>.median(): Int =
+        this.sorted()
+            .let { sorted ->
+                val size = sorted.size
+                if (size % 2 == 0) {
+                    (sorted[size / 2] + sorted[(size / 2) + 1]) / 2
+                } else {
+                    sorted[size / 2]
+                }
+            }
 }
