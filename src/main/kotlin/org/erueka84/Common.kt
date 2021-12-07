@@ -35,7 +35,9 @@ object MathLib {
         return x
     }
 
-    fun sumOfFirst(n: Int): Int = n * (n + 1) / 2
+    fun sumOfFirstNaturalsUpTo(n: Int): Int = n * (n + 1) / 2
+
+    fun Int.triangular() = sumOfFirstNaturalsUpTo(this)
 
     fun List<Int>.mean(): Int = this.sum()/ this.size
 
