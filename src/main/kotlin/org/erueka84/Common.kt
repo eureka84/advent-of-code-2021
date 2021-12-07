@@ -22,24 +22,22 @@ object MathLib {
         }
     }
 
-    fun gcd(a: Int, b: Int): Int {
-        var x = abs(a)
-        var y = abs(b)
-        while (x != y) {
-            if (x > y) {
-                x -= y
-            } else {
-                y -= x
-            }
-        }
-        return x
+    tailrec fun gcd(a: Int, b: Int): Int {
+        val x = abs(a)
+        val y = abs(b)
+
+        if (x == y) return x
+        if (x > y)
+            return gcd(x - y, y)
+        else
+            return gcd(x, y - x)
     }
 
     fun sumOfFirstNaturalsUpTo(n: Int): Int = n * (n + 1) / 2
 
     fun Int.triangular() = sumOfFirstNaturalsUpTo(this)
 
-    fun List<Int>.mean(): Int = this.sum()/ this.size
+    fun List<Int>.mean(): Int = this.sum() / this.size
 
     fun List<Int>.median(): Int =
         this.sorted()
