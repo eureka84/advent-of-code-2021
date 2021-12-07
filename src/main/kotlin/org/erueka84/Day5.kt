@@ -11,21 +11,21 @@ object Day5 {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        println(part1().findHotSpots().size) // 6267
-        println(part2().findHotSpots().size) // 20196
+        val input = readLines("/day5.input")
+        println(part1(input)) // 6267
+        println(part2(input)) // 20196
     }
 
-    private fun part1(): Grid {
-        val input = readLines("/day5.input")
-        val segments = parseSegments(input).filter { it.isHorizontal || it.isVertical }
-        return Grid.from(segments)
-    }
+    private fun part1(input: Sequence<String>): Int =
+        parseSegments(input)
+            .filter { it.isHorizontal || it.isVertical }
+            .let(this::findHotSpotsCount)
 
-    private fun part2(): Grid {
-        val input = readLines("/day5.input")
-        val segments = parseSegments(input)
-        return Grid.from(segments)
-    }
+    private fun part2(sequence: Sequence<String>): Int =
+        findHotSpotsCount(parseSegments(sequence))
+
+    private fun findHotSpotsCount(segments: List<Segment>) =
+        Grid.from(segments).findHotSpots().size
 
     data class Grid(val segments: List<Segment>) {
 
