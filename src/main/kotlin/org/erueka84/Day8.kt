@@ -26,15 +26,16 @@ object Day8 {
 
     private fun part1(): Int {
         val input = readLines("/day8.input")
-        val readingDigits = input.flatMap { line ->
-            val (_, reading) = line.split("|")
-            val readingDigits = reading.trim().split(" ")
-            readingDigits
-        }
-        val readingDigitsByRepresentationSize = readingDigits.groupingBy { it.length }.eachCount()
+        val readingDigitsByRepresentationSize = readingDigits(input).groupingBy { it.length }.eachCount()
 
-        return DIGITS_WITH_UNIQUE_LENGTH_REPRESENTATION.sumOf {
-            readingDigitsByRepresentationSize[normalDigitsConf[it]?.length]!!
-        }
+        return DIGITS_WITH_UNIQUE_LENGTH_REPRESENTATION
+            .map { normalDigitsConf[it]?.length }
+            .sumOf { readingDigitsByRepresentationSize[it]!! }
+    }
+
+    private fun readingDigits(input: Sequence<String>) = input.flatMap { line ->
+        val (_, reading) = line.split("|")
+        val readingDigits = reading.trim().split(" ")
+        readingDigits
     }
 }
