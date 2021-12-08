@@ -8,7 +8,7 @@ object Day8 {
     fun main(args: Array<String>) {
         val input = readLines("/day8.input")
         println(part1(input)) // 548
-        println(part2(input))
+        println(part2(input)) // 1074888
     }
 
     private fun part1(input: Sequence<String>): Int {
@@ -97,10 +97,10 @@ object Day8 {
         companion object {
             fun from(line: String): Display {
                 val (rawUniqueDigits, rawReading) = line.split("|")
-                val scrambledReading = rawReading.trim().split(" ").map { sortChars(it) }
-                val uniqueDigits = rawUniqueDigits.trim().split(" ").map { sortChars(it) }
-                return Display(scrambledReading, uniqueDigits)
+                return Display(parse(rawReading), parse(rawUniqueDigits))
             }
+
+            private fun parse(rawReading: String) = rawReading.trim().split(" ").map { sortChars(it) }
 
             private fun sortChars(it: String) = it.toCharArray().sorted().joinToString(separator = "")
         }
