@@ -10,7 +10,7 @@ object Day6Part1 {
     }
 
     private fun simulate(days: Int): Int {
-        val input = readLines("/day6.input")
+        val input = readLines("/day06.input")
         val sea = Sea.parse(input.first())
         repeat(days) {
             sea.onDayPassed()
@@ -59,7 +59,7 @@ object Day6Part2 {
     }
 
     private fun part2(): Long {
-        val lines = readLines("/day6.input")
+        val lines = readLines("/day06.input")
         val sea = initializeSea(lines)
 
         repeat(256) {

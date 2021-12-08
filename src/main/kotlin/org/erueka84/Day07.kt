@@ -6,7 +6,7 @@ import org.erueka84.MathLib.median
 import org.erueka84.MathLib.triangular
 import kotlin.math.abs
 
-object Day7 {
+object Day07 {
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -16,7 +16,7 @@ object Day7 {
     }
 
     private fun readInitialCrabsPositions(): List<Int> =
-        readLines("/day7.input").first().split(",").map { it.toInt() }
+        readLines("/day07.input").first().split(",").map { it.toInt() }
 
     private fun part1(positions: List<Int>): Int =
         positions

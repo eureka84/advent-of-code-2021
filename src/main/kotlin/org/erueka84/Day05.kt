@@ -5,13 +5,13 @@ import org.erueka84.MathLib.Fraction
 import kotlin.math.max
 import kotlin.math.min
 
-object Day5 {
+object Day05 {
 
     private val SEGMENT_LINE_PATTERN = "(\\d+,\\d+)\\s->\\s(\\d+,\\d+)".toRegex()
 
     @JvmStatic
     fun main(args: Array<String>) {
-        val input = readLines("/day5.input")
+        val input = readLines("/day05.input")
         println(part1(input)) // 6267
         println(part2(input)) // 20196
     }

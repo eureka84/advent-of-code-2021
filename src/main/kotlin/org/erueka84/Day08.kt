@@ -2,11 +2,11 @@ package org.erueka84
 
 import org.erueka84.Common.readLines
 
-object Day8 {
+object Day08 {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        val input = readLines("/day8.input")
+        val input = readLines("/day08.input")
         println(part1(input)) // 548
         println(part2(input)) // 1074888
     }

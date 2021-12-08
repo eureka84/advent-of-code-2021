@@ -2,7 +2,7 @@ package org.erueka84
 
 import org.erueka84.Common.readLines
 
-object Day4 {
+object Day04 {
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -10,7 +10,7 @@ object Day4 {
     }
 
     private fun solve(): Pair<Int?, Int?> {
-        val input = readLines("/day4.input").toList()
+        val input = readLines("/day04.input").toList()
         val numbers = parseSequenceOfDrawnNumbers(input[0])
         val game = BingoGame.from(input.drop(2))
         numbers.forEach { n ->

@@ -1,11 +1,11 @@
 package org.erueka84
 
-import org.erueka84.Day8.Display
+import org.erueka84.Day08.Display
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
-class Day8Test{
+class Day08Test{
 
     @Test
     fun `parse display`() {

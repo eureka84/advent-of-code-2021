@@ -7,7 +7,7 @@ import org.erueka84.CommonBits.binaryToInt
 object Day3Part1 {
     @JvmStatic
     fun main(args: Array<String>) {
-        val inputLines = readLines("/day3.input")
+        val inputLines = readLines("/day03.input")
         println(diagnosticReport(inputLines).powerConsumption) // 2035764
     }
 
@@ -40,7 +40,7 @@ object Day3Part1 {
 object Day3Part2 {
     @JvmStatic
     fun main(args: Array<String>) {
-        val inputLines = readLines("/day3.input").toList()
+        val inputLines = readLines("/day03.input").toList()
         println(lifeSupportRating(inputLines).value) // 2817661
     }
 

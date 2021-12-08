@@ -1,11 +1,11 @@
 package org.erueka84
 
 import org.erueka84.Common.readLines
-import org.erueka84.Day2.Command.Companion.parseCommand
-import org.erueka84.Day2.Direction.*
-import org.erueka84.Day2.Direction.Companion.parse
+import org.erueka84.Day02.Command.Companion.parseCommand
+import org.erueka84.Day02.Direction.*
+import org.erueka84.Day02.Direction.Companion.parse
 
-object Day2 {
+object Day02 {
 
     enum class Direction {
         UP, DOWN, FORWARD;
@@ -52,12 +52,12 @@ object Day2 {
     }
 
     private fun part1(): SubMarine =
-        readLines("/day2.input")
+        readLines("/day02.input")
             .map { parseCommand(it)!! }
             .fold(SubMarine()) { subMarine, command -> subMarine execute command }
 
     private fun part2(): SubMarine2 =
-        readLines("/day2.input")
+        readLines("/day02.input")
             .map { parseCommand(it)!! }
             .fold(SubMarine2()) { subMarine, command -> subMarine execute command }
 
