@@ -39,32 +39,32 @@ object Day8 {
         }
 
         private val digitsMap: Map<String, Char> by lazy {
-            val byLength: Map<Int, List<String>> = scrambledUniqueDigits.groupBy { it.length }
+            val digitsByLength: Map<Int, List<String>> = scrambledUniqueDigits.groupBy { it.length }
             val result = mutableMapOf<String, Char>()
 
-            val one = byLength[2]!!.first()
-            val four = byLength[4]!!.first()
-            val seven = byLength[3]!!.first()
-            val eight = byLength[7]!!.first()
+            val one = digitsByLength[2]!!.first()
+            val four = digitsByLength[4]!!.first()
+            val seven = digitsByLength[3]!!.first()
+            val eight = digitsByLength[7]!!.first()
 
             result[one] = '1'
             result[four] = '4'
             result[seven] = '7'
             result[eight] = '8'
 
-            extractDigitsOfLengthFive(byLength, result, one, four)
-            extractDigitsOfLengthSix(byLength, result, one, four)
+            extractDigitsOfLengthFive(digitsByLength, result, one, four)
+            extractDigitsOfLengthSix(digitsByLength, result, one, four)
 
             result
         }
 
         private fun extractDigitsOfLengthSix(
-            byLength: Map<Int, List<String>>,
+            digitsByLength: Map<Int, List<String>>,
             result: MutableMap<String, Char>,
             one: String,
             four: String
         ) {
-            val oneOfZeroSixOrNine = byLength[6]!!
+            val oneOfZeroSixOrNine = digitsByLength[6]!!
             val nine = oneOfZeroSixOrNine.find { it.containsAllCharsOf(four) }!!
             result[nine] = '9'
 
@@ -77,12 +77,12 @@ object Day8 {
         }
 
         private fun extractDigitsOfLengthFive(
-            byLength: Map<Int, List<String>>,
+            digitsByLength: Map<Int, List<String>>,
             result: MutableMap<String, Char>,
             one: String,
             four: String
         ) {
-            val oneOfTwoThreeOrFive = byLength[5]!!
+            val oneOfTwoThreeOrFive = digitsByLength[5]!!
             val three = oneOfTwoThreeOrFive.find { it.containsAllCharsOf(one) }!!
             result[three] = '3'
 
