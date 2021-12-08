@@ -9,11 +9,10 @@ class Day8Test{
 
     @Test
     fun `parse display`() {
-
         val display =
             Display.from("be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe")
 
-        assertThat(display.reading(), equalTo(8394))
+        assertThat(display.reading, equalTo(8394))
 
     }
 }

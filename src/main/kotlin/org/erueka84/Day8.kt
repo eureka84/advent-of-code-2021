@@ -28,14 +28,14 @@ object Day8 {
     private fun part2(input: Sequence<String>): Int =
         input
             .map { line -> Display.from(line) }
-            .sumOf { display -> display.reading() }
+            .sumOf { display -> display.reading }
 
     data class Display(
         private val scrambledReading: List<String>,
         private val scrambledUniqueDigits: List<String>
     ) {
-        fun reading(): Int {
-            return scrambledReading.map { digitsMap[it]!! }.joinToString(separator = "").toInt()
+        val reading: Int by lazy {
+            scrambledReading.map { digitsMap[it] }.joinToString(separator = "").toInt()
         }
 
         private val digitsMap: Map<String, Char> by lazy {
@@ -52,17 +52,17 @@ object Day8 {
             result[seven] = '7'
             result[eight] = '8'
 
-            extractDigitsOfLengthFive(byLength, one, result, four)
-            extractDigitsOveLengthSix(byLength, four, result, one)
+            extractDigitsOfLengthFive(byLength, result, one, four)
+            extractDigitsOveLengthSix(byLength, result, one, four)
 
             result
         }
 
         private fun extractDigitsOveLengthSix(
             byLength: Map<Int, List<String>>,
-            four: String,
             result: MutableMap<String, Char>,
-            one: String
+            one: String,
+            four: String
         ) {
             val oneOfZeroSixOrNine = byLength[6]!!
             val nine = oneOfZeroSixOrNine.find { it.containsAllCharsOf(four) }!!
@@ -78,8 +78,8 @@ object Day8 {
 
         private fun extractDigitsOfLengthFive(
             byLength: Map<Int, List<String>>,
-            one: String,
             result: MutableMap<String, Char>,
+            one: String,
             four: String
         ) {
             val oneOfTwoThreeOrFive = byLength[5]!!
@@ -104,7 +104,6 @@ object Day8 {
 
             private fun sortChars(it: String) = it.toCharArray().sorted().joinToString(separator = "")
         }
-
     }
 
     private val DIGITS_WITH_UNIQUE_LENGTH_REPRESENTATION = listOf(1, 4, 7, 8)
@@ -128,3 +127,4 @@ object Day8 {
 
     private fun String.containsAllCharsOf(other: String): Boolean = other.all { this.contains(it) }
 }
+
