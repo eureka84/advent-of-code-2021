@@ -53,12 +53,12 @@ object Day8 {
             result[eight] = '8'
 
             extractDigitsOfLengthFive(byLength, result, one, four)
-            extractDigitsOveLengthSix(byLength, result, one, four)
+            extractDigitsOfLengthSix(byLength, result, one, four)
 
             result
         }
 
-        private fun extractDigitsOveLengthSix(
+        private fun extractDigitsOfLengthSix(
             byLength: Map<Int, List<String>>,
             result: MutableMap<String, Char>,
             one: String,
