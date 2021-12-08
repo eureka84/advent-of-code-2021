@@ -46,22 +46,24 @@ object Day8 {
             val four = byLength[4]!!.first()
             val seven = byLength[3]!!.first()
             val eight = byLength[7]!!.first()
+
             result[one] = '1'
             result[four] = '4'
             result[seven] = '7'
             result[eight] = '8'
 
-            val oneOfTwoThreeOrFive = byLength[5]!!
-            val three = oneOfTwoThreeOrFive.find { it.containsAllCharsOf(one) }!!
-            result[three] = '3'
+            extractDigitsOfLengthFive(byLength, one, result, four)
+            extractDigitsOveLengthSix(byLength, four, result, one)
 
-            val twoOrFive = oneOfTwoThreeOrFive - three
-            val five = twoOrFive.find { it.containsAllCharsOf(four - one) }!!
-            result[five] = '5'
+            result
+        }
 
-            val two = (twoOrFive - five)[0]
-            result[two] = '2'
-
+        private fun extractDigitsOveLengthSix(
+            byLength: Map<Int, List<String>>,
+            four: String,
+            result: MutableMap<String, Char>,
+            one: String
+        ) {
             val oneOfZeroSixOrNine = byLength[6]!!
             val nine = oneOfZeroSixOrNine.find { it.containsAllCharsOf(four) }!!
             result[nine] = '9'
@@ -72,8 +74,24 @@ object Day8 {
 
             val six = (zeroOrSix - zero)[0]
             result[six] = '6'
+        }
 
-            result
+        private fun extractDigitsOfLengthFive(
+            byLength: Map<Int, List<String>>,
+            one: String,
+            result: MutableMap<String, Char>,
+            four: String
+        ) {
+            val oneOfTwoThreeOrFive = byLength[5]!!
+            val three = oneOfTwoThreeOrFive.find { it.containsAllCharsOf(one) }!!
+            result[three] = '3'
+
+            val twoOrFive = oneOfTwoThreeOrFive - three
+            val five = twoOrFive.find { it.containsAllCharsOf(four - one) }!!
+            result[five] = '5'
+
+            val two = (twoOrFive - five)[0]
+            result[two] = '2'
         }
 
         companion object {
