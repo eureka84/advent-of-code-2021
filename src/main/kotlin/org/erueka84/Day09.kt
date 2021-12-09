@@ -85,9 +85,13 @@ object Day09 {
     data class Point(val x: Int, val y: Int, val height: Int, var isLow: Boolean = false)
 
     private fun List<List<Point>>.listOfAdjacentOf(point: Point): List<Point> {
-        val contiguousPositions = listOf(Pair(-1, 0), Pair(0, 1), Pair(0, -1), Pair(1, 0))
+        val contiguousPositions = listOf(
+            Pair(point.x - 1, point.y),
+            Pair(point.x, point.y + 1),
+            Pair(point.x, point.y - 1),
+            Pair(point.x + 1, 0)
+        )
         return contiguousPositions
-            .map { (x, y) -> Pair(point.x + x, point.y + y) }
             .filter { (i, j) -> this.exists(i, j) }
             .map { (i, j) -> this[i][j] }
     }
