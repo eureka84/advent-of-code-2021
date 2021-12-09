@@ -84,7 +84,7 @@ object Day09 {
 
     data class Point(val x: Int, val y: Int, val height: Int, var isLow: Boolean = false)
 
-    fun List<List<Point>>.listOfAdjacentOf(point: Point): List<Point> {
+    private fun List<List<Point>>.listOfAdjacentOf(point: Point): List<Point> {
         val contiguousPositions = listOf(Pair(-1, 0), Pair(0, 1), Pair(0, -1), Pair(1, 0))
         return contiguousPositions
             .map { (x, y) -> Pair(point.x + x, point.y + y) }
@@ -92,10 +92,10 @@ object Day09 {
             .map { (i, j) -> this[i][j] }
     }
 
-    fun List<List<Point>>.exists(i: Int, j: Int): Boolean =
+    private fun List<List<Point>>.exists(i: Int, j: Int): Boolean =
         (this.size > i && i >= 0) && (this[i].size > j && j >= 0)
 
-    fun List<List<Point>>.isNotOnTopOfAHill(node: Point): Boolean =
+    private fun List<List<Point>>.isNotOnTopOfAHill(node: Point): Boolean =
         this.exists(node.x, node.y) && this[node.x][node.y].height != 9
 
 }
