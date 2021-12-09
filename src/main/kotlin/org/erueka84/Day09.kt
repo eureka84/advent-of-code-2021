@@ -89,7 +89,7 @@ object Day09 {
             Pair(point.x - 1, point.y),
             Pair(point.x, point.y + 1),
             Pair(point.x, point.y - 1),
-            Pair(point.x + 1, 0)
+            Pair(point.x + 1, point.y)
         )
         return contiguousPositions
             .filter { (i, j) -> this.exists(i, j) }
