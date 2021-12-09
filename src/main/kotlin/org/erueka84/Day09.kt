@@ -23,17 +23,17 @@ object Day09 {
         init {
             (0 until rows).forEach { i ->
                 (0 until cols).forEach { j ->
-                    if (pointIsLowerThanAllHisNeighbours(i, j)){
+                    if (pointIsLowerThanAllHisNeighbours(i, j)) {
                         map[i][j].isLow = true
                     }
                 }
             }
         }
 
-        fun riskLevel(): Int = map.flatten().filter { it.isLow }.sumOf { it.height +1 }
+        fun riskLevel(): Int = map.flatten().filter { it.isLow }.sumOf { it.height + 1 }
 
         private fun pointIsLowerThanAllHisNeighbours(i: Int, j: Int) =
-            map[i][j].listOfAdjacentOn(map).all { map[i][j].height < it.height }
+            map.listOfAdjacentOf(map[i][j]).all { map[i][j].height < it.height }
 
         fun basinsAreas(): Int {
             val visited = mutableMapOf<Point, Boolean>()
@@ -51,7 +51,7 @@ object Day09 {
 
             basinsAreas.sortDescending()
 
-            return basinsAreas.take(3).reduce { acc, curr -> acc * curr}
+            return basinsAreas.take(3).reduce { acc, curr -> acc * curr }
         }
 
         private fun findBasin(map: List<List<Point>>, visited: MutableMap<Point, Boolean>, node: Point): List<Point> {
@@ -61,7 +61,7 @@ object Day09 {
             val basin = mutableListOf<Point>()
             basin.add(node)
             while (deque.isNotEmpty()) {
-                deque.poll().listOfAdjacentOn(map).forEach { adj ->
+                map.listOfAdjacentOf(deque.poll()).forEach { adj ->
                     if (map.isNotOnTopOfAHill(adj) && !visited.containsKey(adj)) {
                         visited[adj] = true
                         deque.add(adj)
@@ -82,14 +82,14 @@ object Day09 {
         }
     }
 
-    data class Point(val x: Int, val y: Int, val height: Int, var isLow: Boolean = false) {
-        private val contiguousPositions = listOf(Pair(-1, 0), Pair(0, 1), Pair(0, -1), Pair(1, 0))
+    data class Point(val x: Int, val y: Int, val height: Int, var isLow: Boolean = false)
 
-        fun listOfAdjacentOn(map: List<List<Point>>) =
-            contiguousPositions
-                .map { (x, y) -> Pair(this.x + x, this.y + y) }
-                .filter { (i, j) -> map.exists(i, j) }
-                .map { (i, j) -> map[i][j] }
+    fun List<List<Point>>.listOfAdjacentOf(point: Point): List<Point> {
+        val contiguousPositions = listOf(Pair(-1, 0), Pair(0, 1), Pair(0, -1), Pair(1, 0))
+        return contiguousPositions
+            .map { (x, y) -> Pair(point.x + x, point.y + y) }
+            .filter { (i, j) -> this.exists(i, j) }
+            .map { (i, j) -> this[i][j] }
     }
 
     fun List<List<Point>>.exists(i: Int, j: Int): Boolean =
