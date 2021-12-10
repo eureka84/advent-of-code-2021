@@ -22,11 +22,7 @@ object Day10 {
         input.map { validate(it) }
             .filter { it.isIncomplete() }
             .map { it.incompleteLinesScore() }
-            .toList()
-            .sorted()
             .middle()
-
-    private fun List<Long>.middle(): Long = this[this.size/2]
 
     fun validate(s: String): ValidationResult {
         if (s.isEmpty()) return Valid
@@ -54,6 +50,13 @@ object Day10 {
     private fun isOpenParentheses(c: Char) = parenthesesDictionary.containsKey(c)
 
     private val parenthesesDictionary = mapOf('{' to '}', '[' to ']', '(' to ')', '<' to '>')
+
+    private fun Sequence<Long>.middle(): Long {
+        val list = this.toList()
+            .sorted()
+
+        return list[list.size/2]
+    }
 
     sealed class ValidationResult {
         fun isIncomplete(): Boolean = when (this) {
