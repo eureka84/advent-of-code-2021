@@ -34,7 +34,7 @@ object Day09 {
                     val node = map[i][j]
                     if (!visited.containsKey(node) && map.isNotOnTopOfAHill(node)) {
                         val basinArea = exploreBasinArea(map, visited, node)
-                        if(lowPoints.any { p -> basinArea.contains(p)}){
+                        if (lowPoints.any { p -> basinArea.contains(p) }) {
                             basinsAreas.add(basinArea.size)
                         }
                     }
