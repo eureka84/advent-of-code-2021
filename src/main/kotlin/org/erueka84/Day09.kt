@@ -77,33 +77,38 @@ object Day09 {
 
         companion object {
             fun from(input: Sequence<String>): Grid =
-                input.toList().mapIndexed { i, line ->
-                    line.mapIndexed { j, c ->
-                        Point(i, j, c.digitToInt())
+                input.toList().mapIndexed { i, mapRow ->
+                    mapRow.mapIndexed { j, rawHeight ->
+                        Point(Position(i, j), rawHeight.digitToInt())
                     }
                 }.let { Grid(it) }
         }
     }
 
-    data class Point(val x: Int, val y: Int, val height: Int, var isLow: Boolean = false)
+    data class Point(val position: Position, val height: Int, var isLow: Boolean = false) {
+        val x get() = position.x
+        val y get() = position.y
+    }
+
+    data class Position(val x: Int, val y: Int)
 
     private fun BasinMap.listOfAdjacentOf(point: Point): List<Point> {
         val contiguousPositions = listOf(
-            Pair(point.x - 1, point.y),
-            Pair(point.x, point.y + 1),
-            Pair(point.x, point.y - 1),
-            Pair(point.x + 1, point.y)
+            Position(point.x - 1, point.y),
+            Position(point.x, point.y + 1),
+            Position(point.x, point.y - 1),
+            Position(point.x + 1, point.y)
         )
         return contiguousPositions
-            .filter { (i, j) -> this.hasCoordinates(i, j) }
+            .filter { p -> this.containsPosition(p) }
             .map { (i, j) -> this[i][j] }
     }
 
-    private fun BasinMap.hasCoordinates(i: Int, j: Int): Boolean =
-        (this.size > i && i >= 0) && (this[i].size > j && j >= 0)
+    private fun BasinMap.containsPosition(p: Position): Boolean =
+        (this.size > p.x && p.x >= 0) && (this[p.x].size > p.y && p.y >= 0)
 
-    private fun BasinMap.isNotOnTopOfAHill(node: Point): Boolean =
-        this.hasCoordinates(node.x, node.y) && this[node.x][node.y].height != 9
+    private fun BasinMap.isNotOnTopOfAHill(point: Point): Boolean =
+        this.containsPosition(point.position) && point.height != 9
 
 }
 
