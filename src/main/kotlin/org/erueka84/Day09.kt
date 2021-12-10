@@ -11,12 +11,13 @@ object Day09 {
     @JvmStatic
     fun main(args: Array<String>) {
         val input = readLines("/day09.input")
-        println(part1(input)) // 550
-        println(part2(input)) // 1100682
+        val grid = Grid.from(input)
+        println(part1(grid)) // 550
+        println(part2(grid)) // 1100682
     }
 
-    private fun part1(input: Sequence<String>): Int = Grid.from(input).riskLevel()
-    private fun part2(input: Sequence<String>): Int = Grid.from(input).basinsAreas()
+    private fun part1(grid: Grid): Int = grid.riskLevel()
+    private fun part2(grid: Grid): Int = grid.basinsAreas()
 
     data class Grid(private val map: BasinMap) {
 
