@@ -2,6 +2,7 @@ package org.erueka84
 
 import org.erueka84.Common.readLines
 import org.erueka84.Day09.Point
+import java.security.cert.PolicyNode
 import java.util.*
 
 typealias BasinMap = List<List<Point>>
@@ -21,8 +22,21 @@ object Day09 {
 
     data class Grid(private val map: BasinMap) {
 
-        private val lowPoints = map.flatten().filter { it.isLow }
-
+        private val lowPoints: List<Point> by lazy {
+            val rows: Int = map.size
+            val cols: Int = map[0].size
+            val list = mutableListOf<Point>()
+            (0 until rows).forEach { i ->
+                (0 until cols).forEach { j ->
+                    val point = map[i][j]
+                    val neighbours = map.listOfAdjacentOf(point)
+                    if (neighbours.all { point.height < it.height }) {
+                        list.add(point)
+                    }
+                }
+            }
+            list
+        }
         fun riskLevel(): Int = lowPoints.sumOf { it.height + 1 }
 
         fun basinsAreas(): Int {
@@ -71,24 +85,12 @@ object Day09 {
                         Point(Position(i, j), rawHeight.digitToInt())
                     }
                 }
-                val rows: Int = map.size
-                val cols: Int = map[0].size
-                (0 until rows).forEach { i ->
-                    (0 until cols).forEach { j ->
-                        val point = map[i][j]
-                        val neighbours = map.listOfAdjacentOf(point)
-                        if (neighbours.all { point.height < it.height }) {
-                            point.isLow = true
-                        }
-                    }
-                }
-
                 return Grid(map)
             }
         }
     }
 
-    data class Point(val position: Position, val height: Int, var isLow: Boolean = false) {
+    data class Point(val position: Position, val height: Int) {
         val x get() = position.x
         val y get() = position.y
     }
