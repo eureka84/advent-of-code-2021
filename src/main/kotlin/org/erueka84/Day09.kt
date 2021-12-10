@@ -26,17 +26,16 @@ object Day09 {
         init {
             (0 until rows).forEach { i ->
                 (0 until cols).forEach { j ->
-                    if (pointIsLowerThanAllHisNeighbours(i, j)) {
-                        map[i][j].isLow = true
+                    val point = map[i][j]
+                    val neighbours = map.listOfAdjacentOf(point)
+                    if (neighbours.all { point.height < it.height }) {
+                        point.isLow = true
                     }
                 }
             }
         }
 
         fun riskLevel(): Int = map.flatten().filter { it.isLow }.sumOf { it.height + 1 }
-
-        private fun pointIsLowerThanAllHisNeighbours(i: Int, j: Int) =
-            map.listOfAdjacentOf(map[i][j]).all { map[i][j].height < it.height }
 
         fun basinsAreas(): Int {
             val visited = mutableMapOf<Point, Boolean>()
