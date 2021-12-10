@@ -21,7 +21,9 @@ object Day09 {
 
     data class Grid(private val map: BasinMap) {
 
-        fun riskLevel(): Int = map.flatten().filter { it.isLow }.sumOf { it.height + 1 }
+        private val lowPoints = map.flatten().filter { it.isLow }
+
+        fun riskLevel(): Int = lowPoints.sumOf { it.height + 1 }
 
         fun basinsAreas(): Int {
             val visited = mutableMapOf<Point, Boolean>()
@@ -32,7 +34,9 @@ object Day09 {
                     val node = map[i][j]
                     if (!visited.containsKey(node) && map.isNotOnTopOfAHill(node)) {
                         val basinArea = exploreBasinArea(map, visited, node)
-                        basinsAreas.add(basinArea.size)
+                        if(lowPoints.any { p -> basinArea.contains(p)}){
+                            basinsAreas.add(basinArea.size)
+                        }
                     }
                 }
             }
