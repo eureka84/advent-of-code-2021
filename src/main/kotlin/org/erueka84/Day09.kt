@@ -21,21 +21,6 @@ object Day09 {
 
     data class Grid(private val map: BasinMap) {
 
-        private val rows: Int get() = map.size
-        private val cols: Int get() = map[0].size
-
-        init {
-            (0 until rows).forEach { i ->
-                (0 until cols).forEach { j ->
-                    val point = map[i][j]
-                    val neighbours = map.listOfAdjacentOf(point)
-                    if (neighbours.all { point.height < it.height }) {
-                        point.isLow = true
-                    }
-                }
-            }
-        }
-
         fun riskLevel(): Int = map.flatten().filter { it.isLow }.sumOf { it.height + 1 }
 
         fun basinsAreas(): Int {
@@ -76,12 +61,26 @@ object Day09 {
         }
 
         companion object {
-            fun from(input: Sequence<String>): Grid =
-                input.toList().mapIndexed { i, mapRow ->
+            fun from(input: Sequence<String>): Grid {
+                val map = input.toList().mapIndexed { i, mapRow ->
                     mapRow.mapIndexed { j, rawHeight ->
                         Point(Position(i, j), rawHeight.digitToInt())
                     }
-                }.let { Grid(it) }
+                }
+                val rows: Int = map.size
+                val cols: Int = map[0].size
+                (0 until rows).forEach { i ->
+                    (0 until cols).forEach { j ->
+                        val point = map[i][j]
+                        val neighbours = map.listOfAdjacentOf(point)
+                        if (neighbours.all { point.height < it.height }) {
+                            point.isLow = true
+                        }
+                    }
+                }
+
+                return Grid(map)
+            }
         }
     }
 
