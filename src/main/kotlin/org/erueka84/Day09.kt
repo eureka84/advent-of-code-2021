@@ -37,6 +37,7 @@ object Day09 {
             }
             list
         }
+
         fun riskLevel(): Int = lowPoints.sumOf { it.height + 1 }
 
         fun basinsAreas(): Int {
