@@ -23,11 +23,9 @@ object Day09 {
     data class Grid(private val map: BasinMap) {
 
         private val lowPoints: List<Point> by lazy {
-            val rows: Int = map.size
-            val cols: Int = map[0].size
             val list = mutableListOf<Point>()
-            (0 until rows).forEach { i ->
-                (0 until cols).forEach { j ->
+            map.indices.forEach { i ->
+                map[i].indices.forEach { j ->
                     val point = map[i][j]
                     val neighbours = map.listOfAdjacentOf(point)
                     if (neighbours.all { point.height < it.height }) {
