@@ -14,6 +14,8 @@ class Day10Test {
         val validationResult = validate("{[(")
         assertTrue(validationResult.isIncomplete())
 
-        assertThat((validationResult as Incomplete).parenthesesToComplete, equalTo(listOf(')', ']', '}')))
+        val incomplete = validationResult as Incomplete
+        assertThat(incomplete.parenthesesToComplete, equalTo(listOf(')', ']', '}')))
+        assertThat(incomplete.incompleteLinesScore(), equalTo(38))
     }
 }

@@ -2,15 +2,17 @@ package org.erueka84
 
 import org.erueka84.Common.readLines
 import org.erueka84.Day10.ValidationResult.*
+import org.erueka84.MathLib.median
 import java.util.*
 
 object Day10 {
 
     @JvmStatic
     fun main(args: Array<String>) {
+//        val input = readLines("/day10.sample")
         val input = readLines("/day10.input")
         println(part1(input)) // 344193
-        println(part2(input))
+        println(part2(input)) // 3241238967
     }
 
     private fun part1(input: Sequence<String>): Long =
@@ -21,16 +23,17 @@ object Day10 {
     private fun part2(input: Sequence<String>): Long =
         input.map { validate(it) }
             .filter { it.isIncomplete() }
-            .fold(0L) { acc, curr -> acc + curr.incompleteLinesScore() }
-
-    private val parenthesesDictionary = mapOf('{' to '}', '[' to ']', '(' to ')', '<' to '>')
+            .map { it.incompleteLinesScore() }
+            .toList()
+            .sorted()
+            .middle()
 
     fun validate(s: String): ValidationResult {
         if (s.isEmpty()) return Valid
 
         val openParentheses: Deque<Char> = LinkedList()
         s.toCharArray().forEach { c ->
-            if (parenthesesDictionary.containsKey(c)) {
+            if (isOpenParentheses(c)) {
                 openParentheses.push(c)
             } else {
                 if (openParentheses.isEmpty()) {
@@ -47,6 +50,10 @@ object Day10 {
         else
             return Incomplete(openParentheses)
     }
+
+    private fun isOpenParentheses(c: Char) = parenthesesDictionary.containsKey(c)
+
+    private val parenthesesDictionary = mapOf('{' to '}', '[' to ']', '(' to ')', '<' to '>')
 
     sealed class ValidationResult {
         fun isIncomplete(): Boolean = when (this) {
@@ -65,7 +72,7 @@ object Day10 {
         }
 
         fun incompleteLinesScore(): Long = when (this) {
-            is Valid, is Corrupted -> 0
+            is Valid, is Corrupted -> 0L
             is Incomplete -> parenthesesToComplete.fold(0L) { acc, curr -> 5 * acc + curr.incompleteScore() }
         }
 
@@ -78,11 +85,11 @@ object Day10 {
         }
 
         private fun Char.incompleteScore(): Long = when (this) {
-            ')' -> 1
-            ']' -> 2
-            '}' -> 3
-            '>' -> 4
-            else -> 0
+            ')' -> 1L
+            ']' -> 2L
+            '}' -> 3L
+            '>' -> 4L
+            else -> 0L
         }
 
         object Valid : ValidationResult()
@@ -94,3 +101,5 @@ object Day10 {
     }
 
 }
+
+private fun List<Long>.middle(): Long = this[this.size/2]
