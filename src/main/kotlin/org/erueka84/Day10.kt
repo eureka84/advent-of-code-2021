@@ -2,14 +2,12 @@ package org.erueka84
 
 import org.erueka84.Common.readLines
 import org.erueka84.Day10.ValidationResult.*
-import org.erueka84.MathLib.median
 import java.util.*
 
 object Day10 {
 
     @JvmStatic
     fun main(args: Array<String>) {
-//        val input = readLines("/day10.sample")
         val input = readLines("/day10.input")
         println(part1(input)) // 344193
         println(part2(input)) // 3241238967
