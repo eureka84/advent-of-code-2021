@@ -15,27 +15,17 @@ object Day10 {
 
     private fun part1(input: Sequence<String>): Long =
         input.map { validate(it) }
-            .fold(0L) { acc, curr ->
-                when (curr) {
-                    is Valid -> acc
-                    is Incomplete -> acc
-                    is Corrupted -> acc + when (curr.wrongParenthesis) {
-                        ')' -> 3L
-                        ']' -> 57L
-                        '}' -> 1197L
-                        '>' -> 25137L
-                        else -> 0L
-                    }
-                }
-            }
+            .filter { it.isCorrupted() }
+            .fold(0L) { acc, curr -> acc + curr.corruptedLinesScore() }
 
-    private fun part2(input: Sequence<String>): Long {
-        TODO("Not yet implemented")
-    }
+    private fun part2(input: Sequence<String>): Long =
+        input.map { validate(it) }
+            .filter { it.isIncomplete() }
+            .fold(0L) { acc, curr -> acc + curr.incompleteLinesScore() }
 
     private val parenthesesDictionary = mapOf('{' to '}', '[' to ']', '(' to ')', '<' to '>')
 
-    private fun validate(s: String): ValidationResult {
+    fun validate(s: String): ValidationResult {
         if (s.isEmpty()) return Valid
 
         val openParentheses: Deque<Char> = LinkedList()
@@ -55,13 +45,52 @@ object Day10 {
         if (openParentheses.isEmpty())
             return Valid
         else
-            return Incomplete
+            return Incomplete(openParentheses)
     }
 
     sealed class ValidationResult {
+        fun isIncomplete(): Boolean = when (this) {
+            is Incomplete -> true
+            else -> false
+        }
+
+        fun isCorrupted(): Boolean = when (this) {
+            is Corrupted -> true
+            else -> false
+        }
+
+        fun corruptedLinesScore(): Long = when (this) {
+            is Valid, is Incomplete -> 0
+            is Corrupted -> wrongParentheses.corruptedScore()
+        }
+
+        fun incompleteLinesScore(): Long = when (this) {
+            is Valid, is Corrupted -> 0
+            is Incomplete -> parenthesesToComplete.fold(0L) { acc, curr -> 5 * acc + curr.incompleteScore() }
+        }
+
+        private fun Char.corruptedScore(): Long = when (this) {
+            ')' -> 3L
+            ']' -> 57L
+            '}' -> 1197L
+            '>' -> 25137L
+            else -> 0L
+        }
+
+        private fun Char.incompleteScore(): Long = when (this) {
+            ')' -> 1
+            ']' -> 2
+            '}' -> 3
+            '>' -> 4
+            else -> 0
+        }
+
         object Valid : ValidationResult()
-        object Incomplete : ValidationResult()
-        data class Corrupted(val wrongParenthesis: Char) : ValidationResult()
+        data class Incomplete(val openParentheses: Deque<Char>) : ValidationResult() {
+            val parenthesesToComplete: List<Char> = openParentheses.map { parenthesesDictionary[it]!! }
+        }
+
+        data class Corrupted(val wrongParentheses: Char) : ValidationResult()
     }
 
 }
