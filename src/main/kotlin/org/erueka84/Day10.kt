@@ -26,6 +26,8 @@ object Day10 {
             .sorted()
             .middle()
 
+    private fun List<Long>.middle(): Long = this[this.size/2]
+
     fun validate(s: String): ValidationResult {
         if (s.isEmpty()) return Valid
 
@@ -94,10 +96,6 @@ object Day10 {
         data class Incomplete(val openParentheses: Deque<Char>) : ValidationResult() {
             val parenthesesToComplete: List<Char> = openParentheses.map { parenthesesDictionary[it]!! }
         }
-
         data class Corrupted(val wrongParentheses: Char) : ValidationResult()
     }
-
 }
-
-private fun List<Long>.middle(): Long = this[this.size/2]
