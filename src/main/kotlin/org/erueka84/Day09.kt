@@ -1,7 +1,10 @@
 package org.erueka84
 
 import org.erueka84.Common.readLines
+import org.erueka84.Day09.Point
 import java.util.*
+
+typealias BasinMap = List<List<Point>>
 
 object Day09 {
 
@@ -15,7 +18,7 @@ object Day09 {
     private fun part1(input: Sequence<String>): Int = Grid.from(input).riskLevel()
     private fun part2(input: Sequence<String>): Int = Grid.from(input).basinsAreas()
 
-    data class Grid(private val map: List<List<Point>>) {
+    data class Grid(private val map: BasinMap) {
 
         private val rows: Int get() = map.size
         private val cols: Int get() = map[0].size
@@ -43,8 +46,8 @@ object Day09 {
                 map[i].indices.forEach { j ->
                     val node = map[i][j]
                     if (!visited.containsKey(node) && map.isNotOnTopOfAHill(node)) {
-                        val basin = findBasin(map, visited, node)
-                        basinsAreas.add(basin.size)
+                        val basinArea = exploreBasinArea(map, visited, node)
+                        basinsAreas.add(basinArea.size)
                     }
                 }
             }
@@ -54,22 +57,22 @@ object Day09 {
             return basinsAreas.take(3).reduce { acc, curr -> acc * curr }
         }
 
-        private fun findBasin(map: List<List<Point>>, visited: MutableMap<Point, Boolean>, node: Point): List<Point> {
+        private fun exploreBasinArea(map: BasinMap, visited: MutableMap<Point, Boolean>, node: Point): List<Point> {
             visited[node] = true
-            val deque: Queue<Point> = LinkedList()
-            deque.add(node)
-            val basin = mutableListOf<Point>()
-            basin.add(node)
-            while (deque.isNotEmpty()) {
-                map.listOfAdjacentOf(deque.poll()).forEach { adj ->
+            val basinAreaPoints = mutableListOf<Point>()
+            basinAreaPoints.add(node)
+            val explorationQueue: Queue<Point> = LinkedList()
+            explorationQueue.add(node)
+            while (explorationQueue.isNotEmpty()) {
+                map.listOfAdjacentOf(explorationQueue.poll()).forEach { adj ->
                     if (map.isNotOnTopOfAHill(adj) && !visited.containsKey(adj)) {
                         visited[adj] = true
-                        deque.add(adj)
-                        basin.add(adj)
+                        explorationQueue.add(adj)
+                        basinAreaPoints.add(adj)
                     }
                 }
             }
-            return basin
+            return basinAreaPoints
         }
 
         companion object {
@@ -84,7 +87,7 @@ object Day09 {
 
     data class Point(val x: Int, val y: Int, val height: Int, var isLow: Boolean = false)
 
-    private fun List<List<Point>>.listOfAdjacentOf(point: Point): List<Point> {
+    private fun BasinMap.listOfAdjacentOf(point: Point): List<Point> {
         val contiguousPositions = listOf(
             Pair(point.x - 1, point.y),
             Pair(point.x, point.y + 1),
@@ -92,15 +95,15 @@ object Day09 {
             Pair(point.x + 1, point.y)
         )
         return contiguousPositions
-            .filter { (i, j) -> this.exists(i, j) }
+            .filter { (i, j) -> this.hasCoordinates(i, j) }
             .map { (i, j) -> this[i][j] }
     }
 
-    private fun List<List<Point>>.exists(i: Int, j: Int): Boolean =
+    private fun BasinMap.hasCoordinates(i: Int, j: Int): Boolean =
         (this.size > i && i >= 0) && (this[i].size > j && j >= 0)
 
-    private fun List<List<Point>>.isNotOnTopOfAHill(node: Point): Boolean =
-        this.exists(node.x, node.y) && this[node.x][node.y].height != 9
+    private fun BasinMap.isNotOnTopOfAHill(node: Point): Boolean =
+        this.hasCoordinates(node.x, node.y) && this[node.x][node.y].height != 9
 
 }
 
