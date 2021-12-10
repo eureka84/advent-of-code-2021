@@ -2,7 +2,6 @@ package org.erueka84
 
 import org.erueka84.Common.readLines
 import org.erueka84.Day09.Point
-import java.security.cert.PolicyNode
 import java.util.*
 
 typealias BasinMap = List<List<Point>>
@@ -77,6 +76,9 @@ object Day09 {
             return basinAreaPoints
         }
 
+        private fun BasinMap.isNotOnTopOfAHill(point: Point): Boolean =
+            this.containsPosition(point.position) && point.height != 9
+
         companion object {
             fun from(input: Sequence<String>): Grid {
                 val map = input.toList().mapIndexed { i, mapRow ->
@@ -110,9 +112,6 @@ object Day09 {
 
     private fun BasinMap.containsPosition(p: Position): Boolean =
         (this.size > p.x && p.x >= 0) && (this[p.x].size > p.y && p.y >= 0)
-
-    private fun BasinMap.isNotOnTopOfAHill(point: Point): Boolean =
-        this.containsPosition(point.position) && point.height != 9
 
 }
 
