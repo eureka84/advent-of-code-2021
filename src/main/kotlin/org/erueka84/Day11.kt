@@ -8,14 +8,22 @@ object Day11 {
     fun main(args: Array<String>) {
         val input = readLines("/day11.input")
         println(part1(input)) // 1793
+        println(part2(input)) // 247
     }
 
     private fun part1(input: Sequence<String>): Int {
         val octopusGrid = OctopusGrid.from(input)
-        for (i in (1..100)) {
-            octopusGrid.onStep(i)
-        }
+        (1..100).forEach { i -> octopusGrid.onStep(i) }
         return octopusGrid.flashes
+    }
+
+    private fun part2(input: Sequence<String>): Int? {
+        val octopusGrid = OctopusGrid.from(input)
+        var i = 1
+        while (!octopusGrid.haveAllOctopusFlashedAtOnce()) {
+            octopusGrid.onStep(i++)
+        }
+        return octopusGrid.firstSynchronizedFlash()
     }
 
     data class OctopusGrid(val grid: List<List<Octopus>>) {
@@ -23,16 +31,21 @@ object Day11 {
             grid.flatten().forEach { octopus -> octopus.registerOnFlash(this::onFlash) }
         }
 
-        val flashes: Int get() = grid.flatten().sumOf { octopus -> octopus.flashes }
+        private val _flashes = mutableMapOf<Int, Int>()
 
-        private val rows: Int = grid.size
-        private val cols: Int = grid.first().size
+        val flashes: Int get() = _flashes.values.sum()
 
         fun onStep(i: Int) {
             grid.flatten().forEach { octopus -> octopus.onStep(i) }
         }
 
+        fun firstSynchronizedFlash(): Int? =
+            _flashes.filter { (_, v) -> v == grid.numberOfPoints }.keys.minOrNull()
+
+        fun haveAllOctopusFlashedAtOnce(): Boolean = firstSynchronizedFlash() != null
+
         private fun onFlash(flash: Flash) {
+            _flashes[flash.step] = (_flashes[flash.step] ?: 0) + 1
             listOfAdjacentOf(flash.position).forEach { octopus -> octopus.onStep(flash.step) }
         }
 
@@ -46,7 +59,7 @@ object Day11 {
             }
 
         private fun exists(position: Position): Boolean =
-            position.let { (x, y) -> (x in 0 until rows) && (y in 0 until cols) }
+            position.let { (x, y) -> (x in 0 until grid.rows) && (y in 0 until grid.cols) }
 
         override fun toString(): String {
             return grid.joinToString(separator = "\n", postfix = "\n") { row ->
@@ -67,8 +80,7 @@ object Day11 {
     }
 
     data class Octopus(val position: Position, var energyLevel: Int) {
-        private val _flashes = mutableListOf<Int>()
-        val flashes: Int get() = _flashes.size
+        private val flashingSteps = mutableListOf<Int>()
 
         private lateinit var onFlash: (Flash) -> Unit
 
@@ -76,16 +88,16 @@ object Day11 {
             this.onFlash = callback
         }
 
-        fun onStep(i: Int) {
-            if (!_flashes.contains(i)) {
+        fun onStep(step: Int) {
+            if (!flashingSteps.contains(step)) {
                 energyLevel += 1
-                maybeFlash(i)
+                maybeFlash(step)
             }
         }
 
         private fun maybeFlash(i: Int) {
             if (energyLevel > 9) {
-                _flashes.add(i)
+                flashingSteps.add(i)
                 energyLevel = 0
                 onFlash(Flash(position, i))
             }
@@ -96,7 +108,6 @@ object Day11 {
         }
     }
 
-
     data class Flash(val position: Position, val step: Int)
 
     data class Position(val x: Int, val y: Int) {
@@ -104,5 +115,9 @@ object Day11 {
             return "($x, $y)"
         }
     }
+
+    private val List<List<Octopus>>.rows: Int get() = this.size
+    private val List<List<Octopus>>.cols: Int get() = this.first().size
+    private val List<List<Octopus>>.numberOfPoints: Int get() = this.rows * this.cols
 
 }
