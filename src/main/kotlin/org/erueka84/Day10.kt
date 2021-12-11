@@ -52,9 +52,7 @@ object Day10 {
     private val parenthesesDictionary = mapOf('{' to '}', '[' to ']', '(' to ')', '<' to '>')
 
     private fun Sequence<Long>.middle(): Long {
-        val list = this.toList()
-            .sorted()
-
+        val list = this.toList().sorted()
         return list[list.size/2]
     }
 
