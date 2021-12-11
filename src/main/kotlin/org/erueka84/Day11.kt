@@ -74,7 +74,6 @@ object Day11 {
                 xRange.flatMap { i -> yRange.map { j -> Position(i, j) } }
             }
 
-
         private fun exists(position: Position): Boolean =
             position.let { (x, y) -> (x in 0 until grid.rows) && (y in 0 until grid.cols) }
 
@@ -96,8 +95,8 @@ object Day11 {
     }
 
     data class Octopus(val position: Position, var energyLevel: Int) {
-        private val flashingSteps = mutableListOf<Int>()
 
+        private val flashingSteps = mutableListOf<Int>()
         private lateinit var onFlash: (Flash) -> Unit
 
         fun registerOnFlashCallback(callback: (Flash) -> Unit) {
