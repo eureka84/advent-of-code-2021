@@ -61,18 +61,17 @@ object Day11 {
             _flashes[flash.step] = (_flashes[flash.step] ?: 0) + 1
         }
 
-        private fun listOfAdjacentOf(position: Position): List<Octopus> =
-            pointsInASize3SquareCenteredIn(position)
-                .filter { p -> exists(p) }
-                .filter { p -> p != position }
-                .map { (i, j) -> grid[i][j] }
-
-        private fun pointsInASize3SquareCenteredIn(position: Position) =
-            position.let { (x, y) ->
+        private fun listOfAdjacentOf(position: Position): List<Octopus> {
+            val pointsInSquareCenteredInPosition = position.let { (x, y) ->
                 val xRange = (x - 1)..(x + 1)
                 val yRange = (y - 1)..(y + 1)
                 xRange.flatMap { i -> yRange.map { j -> Position(i, j) } }
             }
+            return pointsInSquareCenteredInPosition
+                .filter { p -> exists(p) }
+                .filter { p -> p != position }
+                .map { (i, j) -> grid[i][j] }
+        }
 
         private fun exists(position: Position): Boolean =
             position.let { (x, y) -> (x in 0 until grid.rows) && (y in 0 until grid.cols) }
