@@ -2,6 +2,9 @@ package org.erueka84
 
 import org.erueka84.Common.readLines
 
+typealias Step = Int
+typealias Flashes = Int
+
 object Day11 {
 
     @JvmStatic
@@ -19,10 +22,11 @@ object Day11 {
 
     private fun part2(input: Sequence<String>): Int? {
         val octopusGrid = OctopusGrid.from(input)
-        var i = 1
-        while (!octopusGrid.haveAllOctopusFlashedAtOnce()) {
-            octopusGrid.runStep(i++)
-        }
+        val steps = generateSequence(1) { it + 1 }
+        steps
+            .takeWhile { !octopusGrid.haveAllOctopusFlashedAtOnce() }
+            .forEach { step -> octopusGrid.runStep(step) }
+
         return octopusGrid.firstStepWithSynchronizedFlash()
     }
 
@@ -30,14 +34,14 @@ object Day11 {
         init {
             grid.flatten().forEach { octopus -> octopus.registerOnFlashCallback(this::onFlash) }
         }
-        private val _flashes = mutableMapOf<Int, Int>()
-        val flashes: Int get() = _flashes.values.sum()
+        private val _flashes = mutableMapOf<Step, Flashes>()
+        val flashes: Flashes get() = _flashes.values.sum()
 
-        fun runStep(step: Int) {
+        fun runStep(step: Step) {
             grid.flatten().forEach { octopus -> octopus increaseEnergyOn step }
         }
 
-        fun firstStepWithSynchronizedFlash(): Int? =
+        fun firstStepWithSynchronizedFlash(): Step? =
             _flashes.filter { (_, v) -> v == grid.numberOfPoints }.keys.minOrNull()
 
         fun haveAllOctopusFlashedAtOnce(): Boolean = firstStepWithSynchronizedFlash() != null
@@ -100,14 +104,14 @@ object Day11 {
             this.onFlash = callback
         }
 
-        infix fun increaseEnergyOn(step: Int) {
+        infix fun increaseEnergyOn(step: Step) {
             if (!flashingSteps.contains(step)) {
                 energyLevel += 1
                 maybeFlashOn(step)
             }
         }
 
-        private fun maybeFlashOn(step: Int) {
+        private fun maybeFlashOn(step: Step) {
             if (energyLevel > 9) {
                 flashingSteps.add(step)
                 energyLevel = 0
