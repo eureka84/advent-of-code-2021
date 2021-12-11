@@ -13,7 +13,7 @@ object Day11 {
 
     private fun part1(input: Sequence<String>): Int {
         val octopusGrid = OctopusGrid.from(input)
-        (1..100).forEach { i -> octopusGrid.onStep(i) }
+        (1..100).forEach { i -> octopusGrid.runStep(i) }
         return octopusGrid.flashes
     }
 
@@ -21,51 +21,63 @@ object Day11 {
         val octopusGrid = OctopusGrid.from(input)
         var i = 1
         while (!octopusGrid.haveAllOctopusFlashedAtOnce()) {
-            octopusGrid.onStep(i++)
+            octopusGrid.runStep(i++)
         }
-        return octopusGrid.firstSynchronizedFlash()
+        return octopusGrid.firstStepWithSynchronizedFlash()
     }
 
     data class OctopusGrid(val grid: List<List<Octopus>>) {
         init {
-            grid.flatten().forEach { octopus -> octopus.registerOnFlash(this::onFlash) }
+            grid.flatten().forEach { octopus -> octopus.registerOnFlashCallback(this::onFlash) }
         }
-
         private val _flashes = mutableMapOf<Int, Int>()
-
         val flashes: Int get() = _flashes.values.sum()
 
-        fun onStep(i: Int) {
-            grid.flatten().forEach { octopus -> octopus.onStep(i) }
+        fun runStep(step: Int) {
+            grid.flatten().forEach { octopus -> octopus increaseEnergyOn step }
         }
 
-        fun firstSynchronizedFlash(): Int? =
+        fun firstStepWithSynchronizedFlash(): Int? =
             _flashes.filter { (_, v) -> v == grid.numberOfPoints }.keys.minOrNull()
 
-        fun haveAllOctopusFlashedAtOnce(): Boolean = firstSynchronizedFlash() != null
+        fun haveAllOctopusFlashedAtOnce(): Boolean = firstStepWithSynchronizedFlash() != null
 
         private fun onFlash(flash: Flash) {
+            updateFlashes(flash)
+            increaseNeighboursEnergy(flash)
+        }
+
+        private fun increaseNeighboursEnergy(flash: Flash) {
+            flash.let { (position, step) ->
+                listOfAdjacentOf(position).forEach { octopus -> octopus increaseEnergyOn step }
+            }
+        }
+
+        private fun updateFlashes(flash: Flash) {
             _flashes[flash.step] = (_flashes[flash.step] ?: 0) + 1
-            listOfAdjacentOf(flash.position).forEach { octopus -> octopus.onStep(flash.step) }
         }
 
         private fun listOfAdjacentOf(position: Position): List<Octopus> =
+            pointsInASize3SquareCenteredIn(position)
+                .filter { p -> exists(p) }
+                .filter { p -> p != position }
+                .map { (i, j) -> grid[i][j] }
+
+        private fun pointsInASize3SquareCenteredIn(position: Position) =
             position.let { (x, y) ->
-                ((x - 1)..(x + 1))
-                    .flatMap { i -> ((y - 1)..(y + 1)).map { j -> Position(i, j) } }
-                    .filter { p -> exists(p) }
-                    .filter { p -> p != position }
-                    .map { (i, j) -> grid[i][j] }
+                val xRange = (x - 1)..(x + 1)
+                val yRange = (y - 1)..(y + 1)
+                xRange.flatMap { i -> yRange.map { j -> Position(i, j) } }
             }
+
 
         private fun exists(position: Position): Boolean =
             position.let { (x, y) -> (x in 0 until grid.rows) && (y in 0 until grid.cols) }
 
-        override fun toString(): String {
-            return grid.joinToString(separator = "\n", postfix = "\n") { row ->
+        override fun toString(): String =
+            grid.joinToString(separator = "\n", postfix = "\n") { row ->
                 row.joinToString(separator = "") { octopus -> octopus.energyLevel.toString() }
             }
-        }
 
         companion object {
             fun from(input: Sequence<String>): OctopusGrid {
@@ -84,22 +96,22 @@ object Day11 {
 
         private lateinit var onFlash: (Flash) -> Unit
 
-        fun registerOnFlash(callback: (Flash) -> Unit) {
+        fun registerOnFlashCallback(callback: (Flash) -> Unit) {
             this.onFlash = callback
         }
 
-        fun onStep(step: Int) {
+        infix fun increaseEnergyOn(step: Int) {
             if (!flashingSteps.contains(step)) {
                 energyLevel += 1
-                maybeFlash(step)
+                maybeFlashOn(step)
             }
         }
 
-        private fun maybeFlash(i: Int) {
+        private fun maybeFlashOn(step: Int) {
             if (energyLevel > 9) {
-                flashingSteps.add(i)
+                flashingSteps.add(step)
                 energyLevel = 0
-                onFlash(Flash(position, i))
+                onFlash(Flash(position, step))
             }
         }
 
