@@ -31,8 +31,7 @@ object Day12 {
             while (explorationQueue.isNotEmpty()) {
                 val path: Path = explorationQueue.pop()
                 val lastNode: Node = path.last()
-                val lastNodeAdjacentSet: Set<Node> = mapOfAdjacent[lastNode] ?: mutableSetOf()
-                for (node in lastNodeAdjacentSet) {
+                for (node in setOfAdjacentOf(lastNode)) {
                     if (node == "end") {
                         paths.add(path + node)
                     } else if (node.first().isUpperCase() || !path.contains(node)) {
@@ -51,8 +50,7 @@ object Day12 {
                 val enrichedPath = explorationQueue.pop()
                 val (path, singleSmallCaseNodeVisitedTwice) = enrichedPath
                 val lastNode: Node = path.last()
-                val lastNodeAdjacentSet: Set<Node> = mapOfAdjacent[lastNode] ?: mutableSetOf()
-                for (node in lastNodeAdjacentSet) {
+                for (node in setOfAdjacentOf(lastNode)) {
                     if (node == "end") {
                         paths.add(path + node)
                     } else {
@@ -74,6 +72,8 @@ object Day12 {
             }
             return paths.size
         }
+
+        private fun setOfAdjacentOf(lastNode: Node) = mapOfAdjacent[lastNode] ?: mutableSetOf()
 
         data class EnrichedPath(val path: Path, val singleSmallCaseNodeVisitedTwice: Node? = null)
 
