@@ -26,7 +26,7 @@ object Day12 {
 
         fun countPathsFromStartToEndV1(): Int {
             val explorationQueue: Deque<Path> = LinkedList()
-            explorationQueue.push(listOf("start"))
+            explorationQueue.push(pathStartingFrom("start"))
             val paths: MutableList<Path> = mutableListOf()
             while (explorationQueue.isNotEmpty()) {
                 val path: Path = explorationQueue.pop()
@@ -44,7 +44,7 @@ object Day12 {
 
         fun countPathsFromStartToEndV2(): Int {
             val explorationQueue: Deque<EnrichedPath> = LinkedList()
-            explorationQueue.push(EnrichedPath(listOf("start")))
+            explorationQueue.push(EnrichedPath(pathStartingFrom("start")))
             val paths: MutableList<Path> = mutableListOf()
             while (explorationQueue.isNotEmpty()) {
                 val enrichedPath = explorationQueue.pop()
@@ -72,6 +72,8 @@ object Day12 {
             }
             return paths.size
         }
+
+        private fun pathStartingFrom(node: String) = listOf(node)
 
         private fun setOfAdjacentOf(lastNode: Node) = mapOfAdjacent[lastNode] ?: mutableSetOf()
 
