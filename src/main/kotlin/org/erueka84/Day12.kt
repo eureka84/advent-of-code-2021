@@ -24,9 +24,9 @@ object Day12 {
             val paths: MutableList<Path> = mutableListOf()
             while (explorationQueue.isNotEmpty()) {
                 val path: Path = explorationQueue.pop()
-                val last: Node = path.last()
-                val set: Set<Node> = mapOfAdjacent[last]?: mutableSetOf()
-                for (node in set) {
+                val lastNode: Node = path.last()
+                val lastNodeAdjacentSet: Set<Node> = mapOfAdjacent[lastNode]?: mutableSetOf()
+                for (node in lastNodeAdjacentSet) {
                     if (node == "end") {
                         paths.add(path)
                     } else if (node[0].isUpperCase() || !path.contains(node)) {
