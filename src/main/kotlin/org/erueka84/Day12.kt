@@ -57,15 +57,17 @@ object Day12 {
                         paths.add(path + node)
                     } else {
                         when {
-                            node.first().isUpperCase() ->
-                                explorationQueue.push(enrichedPath.copy(path = path + node))
-                            !path.contains(node) ->
-                                explorationQueue.push(enrichedPath.copy(path = path + node))
+                            node.first().isUpperCase() || !path.contains(node) ->
+                                explorationQueue.push(
+                                    enrichedPath.copy(path = path + node)
+                                )
                             node != "start" && singleSmallCaseNodeVisitedTwice == null ->
-                                explorationQueue.push(enrichedPath.copy(
-                                    path = path + node,
-                                    singleSmallCaseNodeVisitedTwice = node
-                                ))
+                                explorationQueue.push(
+                                    enrichedPath.copy(
+                                        path = path + node,
+                                        singleSmallCaseNodeVisitedTwice = node
+                                    )
+                                )
                         }
                     }
                 }
@@ -75,7 +77,7 @@ object Day12 {
 
         data class EnrichedPath(val path: Path, val singleSmallCaseNodeVisitedTwice: Node? = null)
 
-        private fun add(firstNode: Node, secondNode: Node) {
+        private fun addEdge(firstNode: Node, secondNode: Node) {
             addAdjacentToNode(firstNode, secondNode)
             addAdjacentToNode(secondNode, firstNode)
         }
@@ -90,7 +92,7 @@ object Day12 {
                 val graph = Graph()
                 input.forEach { line ->
                     line.split("-").let { (a, b) ->
-                        graph.add(a, b)
+                        graph.addEdge(a, b)
                     }
                 }
                 return graph
