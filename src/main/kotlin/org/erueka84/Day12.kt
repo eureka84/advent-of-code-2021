@@ -25,13 +25,12 @@ object Day12 {
     data class Graph(val mapOfAdjacent: MutableMap<Node, Set<Node>> = mutableMapOf()) {
 
         fun countPathsFromStartToEndV1(): Int {
+            val paths: MutableList<Path> = mutableListOf()
             val explorationQueue: Deque<Path> = LinkedList()
             explorationQueue.push(pathStartingFrom("start"))
-            val paths: MutableList<Path> = mutableListOf()
             while (explorationQueue.isNotEmpty()) {
                 val path: Path = explorationQueue.pop()
-                val lastNode: Node = path.last()
-                for (node in setOfAdjacentOf(lastNode)) {
+                for (node in setOfAdjacentOf(path.last())) {
                     if (node == "end") {
                         paths.add(path + node)
                     } else if (node.first().isUpperCase() || !path.contains(node)) {
@@ -43,14 +42,13 @@ object Day12 {
         }
 
         fun countPathsFromStartToEndV2(): Int {
+            val paths: MutableList<Path> = mutableListOf()
             val explorationQueue: Deque<EnrichedPath> = LinkedList()
             explorationQueue.push(EnrichedPath(pathStartingFrom("start")))
-            val paths: MutableList<Path> = mutableListOf()
             while (explorationQueue.isNotEmpty()) {
                 val enrichedPath = explorationQueue.pop()
                 val (path, singleSmallCaseNodeVisitedTwice) = enrichedPath
-                val lastNode: Node = path.last()
-                for (node in setOfAdjacentOf(lastNode)) {
+                for (node in setOfAdjacentOf(path.last())) {
                     if (node == "end") {
                         paths.add(path + node)
                     } else {
