@@ -64,15 +64,19 @@ object Day13 {
         infix fun foldAlong(line: FoldLine): Point {
             return when (line) {
                 is VerticalLine ->
-                    if (x > line.x)
-                        copy(x = (line.x - (x - line.x)))
-                    else
+                    if (x > line.x){
+                        val dx = x - line.x
+                        copy(x = line.x - dx)
+                    } else {
                         this
+                    }
                 is HorizontalLine ->
-                    if (y > line.y)
-                        copy(y = (line.y - (y - line.y)))
-                    else
+                    if (y > line.y) {
+                        val dy = y - line.y
+                        copy(y = line.y - dy)
+                    } else {
                         this
+                    }
             }
         }
 
