@@ -11,7 +11,7 @@ object Day13 {
         val rawPoints = input.takeWhile { it.isNotEmpty() }
         val rawFolActions = input.dropWhile { it.isNotEmpty() }.drop(1).toList()
         val grid = Grid.from(rawPoints)
-        val foldActions = FoldAction.from(rawFolActions)
+        val foldActions = FoldLine.from(rawFolActions)
 
         val gridAfterOneFold = part1(grid, foldActions)
         println(gridAfterOneFold.size) // 770
@@ -22,18 +22,18 @@ object Day13 {
 
     private fun part1(
         grid: Grid,
-        foldActions: List<FoldAction>
-    ): Grid = grid.applyFoldAction(foldActions.first())
+        foldActions: List<FoldLine>
+    ): Grid = grid.foldAlong(foldActions.first())
 
-    private fun part2(grid: Grid, foldActions: List<FoldAction>): Grid {
-        return foldActions.fold(grid) { currGrid, currAction -> currGrid.applyFoldAction(currAction) }
+    private fun part2(grid: Grid, foldActions: List<FoldLine>): Grid {
+        return foldActions.fold(grid) { currGrid, line -> currGrid foldAlong line }
     }
 
     data class Grid(val points: Set<Point>) {
         val size: Int = points.size
 
-        fun applyFoldAction(foldAction: FoldAction): Grid {
-            val foldedPoints = points.map { it.applyFold(foldAction) }.toSet()
+        infix fun foldAlong(line: FoldLine): Grid {
+            val foldedPoints = points.map { it foldAlong line }.toSet()
             return Grid(foldedPoints)
         }
 
@@ -59,10 +59,18 @@ object Day13 {
     }
 
     data class Point(val x: Int, val y: Int) {
-        fun applyFold(fold: FoldAction): Point {
-            return when (fold) {
-                is Vertical -> if (x > fold.x) copy(x = (fold.x - (x - fold.x))) else this
-                is Horizontal -> if (y > fold.y) copy(y = (fold.y - (y - fold.y))) else this
+        infix fun foldAlong(line: FoldLine): Point {
+            return when (line) {
+                is VerticalLine ->
+                    if (x > line.x)
+                        copy(x = (line.x - (x - line.x)))
+                    else
+                        this
+                is HorizontalLine ->
+                    if (y > line.y)
+                        copy(y = (line.y - (y - line.y)))
+                    else
+                        this
             }
         }
 
@@ -73,23 +81,22 @@ object Day13 {
         }
     }
 
-    sealed class FoldAction {
+    sealed class FoldLine {
         companion object {
-            fun from(input: List<String>): List<FoldAction> {
+            fun from(input: List<String>): List<FoldLine> {
                 val foldXRegex = "x=(\\d+)".toRegex()
                 val foldYRegex = "y=(\\d+)".toRegex()
                 return input.map {
                     val find = foldXRegex.find(it)
                     if (find != null)
-                        Vertical(find.groupValues[1].toInt())
+                        VerticalLine(find.groupValues[1].toInt())
                     else
-                        Horizontal(foldYRegex.find(it)!!.groupValues[1].toInt())
+                        HorizontalLine(foldYRegex.find(it)!!.groupValues[1].toInt())
                 }
             }
         }
     }
-
-    data class Horizontal(val y: Int) : FoldAction()
-    data class Vertical(val x: Int) : FoldAction()
+    data class HorizontalLine(val y: Int) : FoldLine()
+    data class VerticalLine(val x: Int) : FoldLine()
 
 }
