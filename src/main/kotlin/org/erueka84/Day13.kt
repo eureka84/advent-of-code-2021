@@ -24,7 +24,7 @@ object Day13 {
         val rawFoldLines = input.subList(separator + 1, input.size)
 
         val grid = Grid.from(rawPoints)
-        val foldActions = FoldLine.from(rawFoldLines)
+        val foldActions = rawFoldLines.map {  rawLine -> FoldLine.from(rawLine) }
 
         return Pair(grid, foldActions)
     }
@@ -94,13 +94,11 @@ object Day13 {
             private val foldXRegex = "x=(\\d+)".toRegex()
             private val foldYRegex = "y=(\\d+)".toRegex()
 
-            fun from(input: List<String>): List<FoldLine> =
-                input.map { rawLine ->
-                    if (foldXRegex.find(rawLine) != null)
-                        VerticalLine(rawLine extractValueFrom foldXRegex)
-                    else
-                        HorizontalLine(rawLine extractValueFrom foldYRegex)
-                }
+            fun from(rawLine: String): FoldLine =
+                if (foldXRegex.find(rawLine) != null)
+                    VerticalLine(rawLine extractValueFrom foldXRegex)
+                else
+                    HorizontalLine(rawLine extractValueFrom foldYRegex)
 
             private infix fun String.extractValueFrom(regex: Regex) =
                 regex.find(this)!!.groupValues[1].toInt()
