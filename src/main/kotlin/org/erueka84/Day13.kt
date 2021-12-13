@@ -6,12 +6,14 @@ object Day13 {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        val input = readLines("/day13.input")
+        val input = readLines("/day13.input").toList()
 
-        val rawPoints = input.takeWhile { it.isNotEmpty() }
-        val rawFolActions = input.dropWhile { it.isNotEmpty() }.drop(1).toList()
+        val separator = input.indexOf("")
+        val rawPoints = input.subList(0, separator)
+        val rawFoldLines = input.subList(separator + 1, input.size)
+
         val grid = Grid.from(rawPoints)
-        val foldActions = FoldLine.from(rawFolActions)
+        val foldActions = FoldLine.from(rawFoldLines)
 
         val gridAfterOneFold = part1(grid, foldActions)
         println(gridAfterOneFold.size) // 770
@@ -33,8 +35,8 @@ object Day13 {
         val size: Int = points.size
 
         infix fun foldAlong(line: FoldLine): Grid {
-            val foldedPoints = points.map { it foldAlong line }.toSet()
-            return Grid(foldedPoints)
+            val newPoints = points.map { it foldAlong line }.toSet()
+            return Grid(newPoints)
         }
 
         override fun toString(): String {
@@ -51,7 +53,7 @@ object Day13 {
         }
 
         companion object {
-            fun from(input: Sequence<String>): Grid {
+            fun from(input: List<String>): Grid {
                 val set = input.map { Point.from(it) }.toSet()
                 return Grid(set)
             }
