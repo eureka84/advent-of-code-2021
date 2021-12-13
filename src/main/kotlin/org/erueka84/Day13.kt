@@ -24,7 +24,7 @@ object Day13 {
         val rawFoldLines = input.subList(separator + 1, input.size)
 
         val grid = Grid.from(rawPoints)
-        val foldActions = rawFoldLines.map {  rawLine -> FoldLine.from(rawLine) }
+        val foldActions = rawFoldLines.map { rawLine -> FoldLine.from(rawLine) }
 
         return Pair(grid, foldActions)
     }
