@@ -30,7 +30,7 @@ object Day13 {
     }
 
     private fun part1(grid: Grid, foldActions: List<FoldLine>): Grid =
-        grid.foldAlong(foldActions.first())
+        grid foldAlong foldActions.first()
 
     private fun part2(grid: Grid, foldLines: List<FoldLine>): Grid =
         foldLines.fold(grid) { currGrid, line -> currGrid foldAlong line }
