@@ -23,10 +23,8 @@ object Day13 {
         println(gridAfterAllFolds) // EPUELPBR
     }
 
-    private fun part1(
-        grid: Grid,
-        foldActions: List<FoldLine>
-    ): Grid = grid.foldAlong(foldActions.first())
+    private fun part1(grid: Grid, foldActions: List<FoldLine>): Grid =
+        grid.foldAlong(foldActions.first())
 
     private fun part2(grid: Grid, foldLines: List<FoldLine>): Grid =
         foldLines.fold(grid) { currGrid, line -> currGrid foldAlong line }
@@ -49,7 +47,6 @@ object Day13 {
             return array.joinToString("\n") {
                 it.joinToString(separator = " ")
             }
-
         }
 
         companion object {
