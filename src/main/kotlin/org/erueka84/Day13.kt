@@ -82,7 +82,8 @@ object Day13 {
         companion object {
             fun from(line: String): Point =
                 line.split(",")
-                    .let { (rawX, rawY) -> Point(rawX.toInt(), rawY.toInt()) }
+                    .map { it.toInt() }
+                    .let { (x, y) -> Point(x, y) }
         }
     }
 
