@@ -61,29 +61,27 @@ object Day13 {
     }
 
     data class Point(val x: Int, val y: Int) {
-        infix fun foldAlong(line: FoldLine): Point {
-            return when (line) {
-                is VerticalLine ->
-                    if (x > line.x){
-                        val dx = x - line.x
-                        copy(x = line.x - dx)
-                    } else {
-                        this
-                    }
-                is HorizontalLine ->
-                    if (y > line.y) {
-                        val dy = y - line.y
-                        copy(y = line.y - dy)
-                    } else {
-                        this
-                    }
-            }
+        infix fun foldAlong(line: FoldLine): Point = when (line) {
+            is VerticalLine ->
+                if (x > line.x){
+                    val dx = x - line.x
+                    copy(x = line.x - dx)
+                } else {
+                    this
+                }
+            is HorizontalLine ->
+                if (y > line.y) {
+                    val dy = y - line.y
+                    copy(y = line.y - dy)
+                } else {
+                    this
+                }
         }
 
         companion object {
-            fun from(line: String): Point {
-                return line.split(",").let { (rawX, rawY) -> Point(rawX.toInt(), rawY.toInt()) }
-            }
+            fun from(line: String): Point =
+                line.split(",")
+                    .let { (rawX, rawY) -> Point(rawX.toInt(), rawY.toInt()) }
         }
     }
 
