@@ -60,7 +60,7 @@ object Day13 {
     data class Point(val x: Int, val y: Int) {
         infix fun foldAlong(line: FoldLine): Point = when (line) {
             is VerticalLine ->
-                if (x > line.x){
+                if (x > line.x) {
                     val dx = x - line.x
                     copy(x = line.x - dx)
                 } else {
@@ -85,19 +85,22 @@ object Day13 {
 
     sealed class FoldLine {
         companion object {
-            fun from(input: List<String>): List<FoldLine> {
-                val foldXRegex = "x=(\\d+)".toRegex()
-                val foldYRegex = "y=(\\d+)".toRegex()
-                return input.map {
-                    val find = foldXRegex.find(it)
-                    if (find != null)
-                        VerticalLine(find.groupValues[1].toInt())
+            private val foldXRegex = "x=(\\d+)".toRegex()
+            private val foldYRegex = "y=(\\d+)".toRegex()
+
+            fun from(input: List<String>): List<FoldLine> =
+                input.map { rawLine ->
+                    if (foldXRegex.find(rawLine) != null)
+                        VerticalLine(rawLine extractValueFrom foldXRegex)
                     else
-                        HorizontalLine(foldYRegex.find(it)!!.groupValues[1].toInt())
+                        HorizontalLine(rawLine extractValueFrom foldYRegex)
                 }
-            }
+
+            private infix fun String.extractValueFrom(regex: Regex) =
+                regex.find(this)!!.groupValues[1].toInt()
         }
     }
+
     data class HorizontalLine(val y: Int) : FoldLine()
     data class VerticalLine(val x: Int) : FoldLine()
 
