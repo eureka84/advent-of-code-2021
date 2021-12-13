@@ -13,14 +13,17 @@ object Day13 {
         val grid = Grid.from(rawPoints)
         val foldActions = FoldAction.from(rawFolActions)
 
-        println(part1(grid, foldActions))
-        println(part2(grid, foldActions))
+        val gridAfterOneFold = part1(grid, foldActions)
+        println(gridAfterOneFold.size) // 770
+
+        val gridAfterAllFolds = part2(grid, foldActions)
+        println(gridAfterAllFolds) // EPUELPBR
     }
 
     private fun part1(
         grid: Grid,
         foldActions: List<FoldAction>
-    ) = grid.applyFoldAction(foldActions.first()).size
+    ): Grid = grid.applyFoldAction(foldActions.first())
 
     private fun part2(grid: Grid, foldActions: List<FoldAction>): Grid {
         return foldActions.fold(grid) { currGrid, currAction -> currGrid.applyFoldAction(currAction) }
@@ -35,14 +38,14 @@ object Day13 {
         }
 
         override fun toString(): String {
-            val cols = points.maxByOrNull { it.x }!!.x
-            val rows = points.maxByOrNull { it.y }!!.y
+            val cols = points.maxOf { it.x }
+            val rows = points.maxOf { it.y }
 
-            val array = Array(rows + 1) { Array(cols + 1) { ". " } }
-            points.forEach { (x, y) -> array[y][x] = "# " }
+            val array = Array(rows + 1) { Array(cols + 1) { '.' } }
+            points.forEach { (x, y) -> array[y][x] = '#' }
 
             return array.joinToString("\n") {
-                it.joinToString(separator = "")
+                it.joinToString(separator = " ")
             }
 
         }
