@@ -28,9 +28,8 @@ object Day13 {
         foldActions: List<FoldLine>
     ): Grid = grid.foldAlong(foldActions.first())
 
-    private fun part2(grid: Grid, foldActions: List<FoldLine>): Grid {
-        return foldActions.fold(grid) { currGrid, line -> currGrid foldAlong line }
-    }
+    private fun part2(grid: Grid, foldLines: List<FoldLine>): Grid =
+        foldLines.fold(grid) { currGrid, line -> currGrid foldAlong line }
 
     data class Grid(val points: Set<Point>) {
         val size: Int = points.size
