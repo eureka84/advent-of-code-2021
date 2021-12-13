@@ -31,15 +31,15 @@ object Day13 {
 
         fun applyFoldAction(foldAction: FoldAction): Grid {
             val foldedPoints = points.map { it.applyFold(foldAction) }.toSet()
-            return Grid(foldedPoints).also { println(it) }
+            return Grid(foldedPoints)
         }
 
         override fun toString(): String {
             val cols = points.maxByOrNull { it.x }!!.x
             val rows = points.maxByOrNull { it.y }!!.y
 
-            val array = Array(rows + 1) { Array(cols + 1) { '.' } }
-            points.forEach { (x, y) -> array[y][x] = '#' }
+            val array = Array(rows + 1) { Array(cols + 1) { ". " } }
+            points.forEach { (x, y) -> array[y][x] = "# " }
 
             return array.joinToString("\n") {
                 it.joinToString(separator = "")

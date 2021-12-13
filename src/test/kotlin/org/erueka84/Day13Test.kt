@@ -20,14 +20,13 @@ class Day13Test {
     }
 
     @Test
-    fun `fold vertical out of grid`() {
+    fun `fold vertical left of the axis`() {
         val point = Point(3, 4)
-        val action = Vertical(2)
+        val action = Vertical(5)
 
-        val expected = Point(1, 4)
-
-        assertThat(point.applyFold(action), equalTo(expected))
+        assertThat(point.applyFold(action), equalTo(point))
     }
+
 
     @Test
     fun `fold horizontal`() {
@@ -37,5 +36,13 @@ class Day13Test {
         val expected = Point(3, 0)
 
         assertThat(point.applyFold(action), equalTo(expected))
+    }
+
+    @Test
+    fun `fold horizontal below y`() {
+        val point = Point(3, 4)
+        val action = Horizontal(6)
+
+        assertThat(point.applyFold(action), equalTo(point))
     }
 }
