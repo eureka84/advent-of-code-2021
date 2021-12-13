@@ -8,12 +8,12 @@ object Day13 {
     fun main(args: Array<String>) {
         val input = readLines("/day13.input").toList()
 
-        val (grid, foldActions) = parse(input)
+        val (grid, foldLines) = parse(input)
 
-        val gridAfterOneFold = part1(grid, foldActions)
+        val gridAfterOneFold = part1(grid, foldLines)
         println(gridAfterOneFold.size) // 770
 
-        val gridAfterAllFolds = part2(grid, foldActions)
+        val gridAfterAllFolds = part2(grid, foldLines)
         println(gridAfterAllFolds.size) // 102
         println(gridAfterAllFolds) // EPUELPBR
     }
@@ -24,13 +24,13 @@ object Day13 {
         val rawFoldLines = input.subList(separator + 1, input.size)
 
         val grid = Grid.from(rawPoints)
-        val foldActions = rawFoldLines.map { rawLine -> FoldLine.from(rawLine) }
+        val foldLines = rawFoldLines.map { rawLine -> FoldLine.from(rawLine) }
 
-        return Pair(grid, foldActions)
+        return Pair(grid, foldLines)
     }
 
-    private fun part1(grid: Grid, foldActions: List<FoldLine>): Grid =
-        grid foldAlong foldActions.first()
+    private fun part1(grid: Grid, foldLines: List<FoldLine>): Grid =
+        grid foldAlong foldLines.first()
 
     private fun part2(grid: Grid, foldLines: List<FoldLine>): Grid =
         foldLines.fold(grid) { currGrid, line -> currGrid foldAlong line }
