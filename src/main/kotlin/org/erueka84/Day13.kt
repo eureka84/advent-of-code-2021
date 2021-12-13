@@ -19,6 +19,7 @@ object Day13 {
         println(gridAfterOneFold.size) // 770
 
         val gridAfterAllFolds = part2(grid, foldActions)
+        println(gridAfterAllFolds.size) // 102
         println(gridAfterAllFolds) // EPUELPBR
     }
 
