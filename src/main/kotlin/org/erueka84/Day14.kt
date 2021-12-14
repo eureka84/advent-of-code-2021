@@ -92,12 +92,12 @@ object Day14Part2 {
         }.groupingBy{ it.first }.aggregate { _, acc, el, _ -> (acc?:0) + el.second }
 
     private fun Map<String, Long>.score(): Long {
-        val stats: LongSummaryStatistics = this.entries.stream()
-            .collect(Collectors.groupingBy({ e -> e.key[0] }, Collectors.summingLong { it.value }))
-            .values
-            .stream()
-            .collect(Collectors.summarizingLong { it.toLong() })
-        return stats.max - stats.min
+        val aggregate: Map<Char, Long> =
+            this.entries
+                .groupingBy { it.key.first() }
+                .aggregate { _, accumulator, entry, _ -> (accumulator ?: 0) + entry.value }
+
+        return aggregate.maxOf { it.value } - aggregate.minOf { it.value }
     }
 }
 
