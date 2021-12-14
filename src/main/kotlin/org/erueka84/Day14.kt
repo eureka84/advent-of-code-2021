@@ -89,7 +89,7 @@ object Day14Part2 {
             } else {
                 listOf(Pair(k, v))
             }
-        }.groupBy({ it.first }, { it.second }).mapValues { (_, v) -> v.sum() }
+        }.groupingBy{ it.first }.aggregate { _, acc, el, _ -> (acc?:0) + el.second }
 
     private fun Map<String, Long>.score(): Long {
         val stats: LongSummaryStatistics = this.entries.stream()
