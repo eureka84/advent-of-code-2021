@@ -37,12 +37,12 @@ object Day14{
         return Pair(pair, insertion)
     }
 
-    private infix fun Map<String, Long>.applyRules(rules: Map<String, String>): Map<String, Long> =
+    private infix fun Map<String, Long>.applyRules(insertionRules: Map<String, String>): Map<String, Long> =
         flatMap { (k, v) ->
-            val middle: String? = rules[k]
-            if (middle != null) {
-                val leftPair = k[0] + middle
-                val rightPair = middle + k[1]
+            val charToInsert: String? = insertionRules[k]
+            if (charToInsert != null) {
+                val leftPair = k[0] + charToInsert
+                val rightPair = charToInsert + k[1]
                 listOf(Pair(leftPair, v), Pair(rightPair, v))
             } else {
                 listOf(Pair(k, v))
