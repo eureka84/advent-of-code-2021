@@ -79,21 +79,17 @@ object Day14Part2 {
         return Pair(pair, insertion)
     }
 
-    private fun Map<String, Long>.applyRules(rules: Map<String, String>): Map<String, Long> {
-        val newPoly = HashMap<String, Long>()
-        this.forEach { (k, v) ->
+    private fun Map<String, Long>.applyRules(rules: Map<String, String>): Map<String, Long> =
+        flatMap { (k, v) ->
             val middle: String? = rules[k]
             if (middle != null) {
-                val leftPair = "${k[0]}$middle"
-                val rightPair = "$middle${k[1]}"
-                newPoly.merge(leftPair, v) { a, b -> a + b }
-                newPoly.merge(rightPair, v) { a, b -> a + b }
+                val leftPair = k[0] + middle
+                val rightPair = middle + k[1]
+                listOf(Pair(leftPair, v), Pair(rightPair, v))
             } else {
-                newPoly[k] = v
+                listOf(Pair(k, v))
             }
-        }
-        return newPoly
-    }
+        }.groupBy({ it.first }, { it.second }).mapValues { (_, v) -> v.sum() }
 
     private fun Map<String, Long>.score(): Long {
         val stats: LongSummaryStatistics = this.entries.stream()
