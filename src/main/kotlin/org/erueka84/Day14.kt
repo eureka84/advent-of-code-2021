@@ -47,7 +47,7 @@ object Day14Part2 {
     @JvmStatic
     fun main(args: Array<String>) {
         val input = readLines("/day14.input")
-        println(solve(input)) // 2797
+        println(solve(input)) // 2926813379532
     }
 
     private fun solve(input: Sequence<String>): Long {
@@ -59,8 +59,14 @@ object Day14Part2 {
     }
 
     private fun parse(input: Sequence<String>): Pair<Map<String, Long>, Map<String, String>> {
+        val template = input.first()
         val initialPolymer: Map<String, Long> =
-            input.first().windowed(2).groupingBy { it }.eachCount().mapValues { (_, v) -> v.toLong() }
+            template
+                .windowed(2)
+                .groupingBy { it }
+                .eachCount()
+                .mapValues { (_, v) -> v.toLong() }
+                .plus(template.last().toString() to 1)
 
         val insertionRules = input.drop(2).map { line -> parseRule(line) }.toMap()
 
@@ -68,25 +74,22 @@ object Day14Part2 {
     }
 
     private fun parseRule(line: String): Pair<String, String> {
-        val (_, pair, insertion) = "([A-z]{2})\\s+->\\s([A-Z])".toRegex().matchEntire(line)!!.groupValues
+        val pattern = "([A-z]{2})\\s+->\\s([A-Z])".toRegex()
+        val (_, pair, insertion) = pattern.matchEntire(line)!!.groupValues
         return Pair(pair, insertion)
     }
 
     private fun Map<String, Long>.applyRules(rules: Map<String, String>): Map<String, Long> {
         val newPoly = HashMap<String, Long>()
-        this.forEach{ pair ->
-            if (pair.key.length == 2) {
-                val midChar: String = rules[pair.key]!!
-                val leftPair = "${pair.key[0]}$midChar"
-                val rightPair = "$midChar${pair.key[1]}"
-                newPoly.merge(
-                    leftPair, pair.value
-                ) { a: Long?, b: Long? -> java.lang.Long.sum(a!!, b!!) }
-                newPoly.merge(
-                    rightPair, pair.value
-                ) { a: Long?, b: Long? -> java.lang.Long.sum(a!!, b!!) }
+        this.forEach { (k, v) ->
+            val middle: String? = rules[k]
+            if (middle != null) {
+                val leftPair = "${k[0]}$middle"
+                val rightPair = "$middle${k[1]}"
+                newPoly.merge(leftPair, v) { a, b -> a + b }
+                newPoly.merge(rightPair, v) { a, b -> a + b }
             } else {
-                newPoly[pair.key] = pair.value
+                newPoly[k] = v
             }
         }
         return newPoly
@@ -94,15 +97,10 @@ object Day14Part2 {
 
     private fun Map<String, Long>.score(): Long {
         val stats: LongSummaryStatistics = this.entries.stream()
-            .collect(
-                Collectors.groupingBy(
-                    { e -> e.key[0] },
-                    Collectors.summingLong{ it.value }
-                )
-            )
+            .collect(Collectors.groupingBy({ e -> e.key[0] }, Collectors.summingLong { it.value }))
             .values
             .stream()
-            .collect(Collectors.summarizingLong {it.toLong()})
+            .collect(Collectors.summarizingLong { it.toLong() })
         return stats.max - stats.min
     }
 }
