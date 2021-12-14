@@ -1,62 +1,20 @@
 package org.erueka84
 
 import org.erueka84.Common.readLines
-import java.util.*
-import java.util.stream.Collectors
 
-
-object Day14Part1 {
-
+object Day14{
     @JvmStatic
     fun main(args: Array<String>) {
         val input = readLines("/day14.input")
-        println(solve(input)) // 2797
-    }
-
-    private fun solve(input: Sequence<String>): Int {
         val (initialPolymer, insertionRules) = parse(input)
-        val finalPolymer = (1..10).fold(initialPolymer) { acc, _ -> acc.apply(insertionRules) }
-        val elementsCount = finalPolymer.elementsCount()
-        val maxOf: Int = elementsCount.maxOf { (_, v) -> v }
-        val minOf: Int = elementsCount.minOf { (_, v) -> v }
-        return maxOf - minOf
+        println(solve(initialPolymer, insertionRules, 10)) // 2797
+        println(solve(initialPolymer, insertionRules, 40)) // 2926813379532
     }
 
-    private fun parse(input: Sequence<String>): Pair<Polymer, List<InsertionRule>> {
-        val initialPolymer: Polymer = input.first()
-        val insertionRules = input.drop(2).map { line -> InsertionRule.from(line) }.toList()
-        return Pair(initialPolymer, insertionRules)
-    }
-
-    private fun Polymer.apply(insertionRules: List<InsertionRule>): Polymer {
-        val rulesByPair = insertionRules.groupBy { it.pair }.mapValues { (_, v) -> v.first() }
-        return this.windowed(2)
-            .map { pair -> rulesByPair[pair]?.replacement or pair }
-            .reduce { acc, s -> acc mergeWith s }
-    }
-
-    infix fun String?.or(default: String): String = this ?: default
-
-    private fun Polymer.elementsCount(): Map<Element, Int> = this.groupingBy { it }.eachCount()
-
-    private infix fun String.mergeWith(other: String): String = this + other.substring(1)
-
-}
-
-object Day14Part2 {
-    @JvmStatic
-    fun main(args: Array<String>) {
-        val input = readLines("/day14.input")
-        println(solve(input)) // 2926813379532
-    }
-
-    private fun solve(input: Sequence<String>): Long {
-        val (initialPolymer, insertionRules) = parse(input)
-
-        val lastPolymer = (1..40).fold(initialPolymer) { acc, _ -> acc.applyRules(insertionRules) }
-
-        return lastPolymer.score()
-    }
+    private fun solve(initialPolymer: Map<String, Long>, insertionRules: Map<String, String>, steps: Int): Long =
+        (1..steps)
+            .fold(initialPolymer) { currentPolymer, _ -> currentPolymer applyRules insertionRules }
+            .score()
 
     private fun parse(input: Sequence<String>): Pair<Map<String, Long>, Map<String, String>> {
         val template = input.first()
@@ -79,7 +37,7 @@ object Day14Part2 {
         return Pair(pair, insertion)
     }
 
-    private fun Map<String, Long>.applyRules(rules: Map<String, String>): Map<String, Long> =
+    private infix fun Map<String, Long>.applyRules(rules: Map<String, String>): Map<String, Long> =
         flatMap { (k, v) ->
             val middle: String? = rules[k]
             if (middle != null) {
@@ -100,19 +58,3 @@ object Day14Part2 {
         return aggregate.maxOf { it.value } - aggregate.minOf { it.value }
     }
 }
-
-
-data class InsertionRule(val pair: String, val charToInsert: String) {
-
-    val replacement: String get() = pair[0] + charToInsert + pair[1]
-
-    companion object {
-        fun from(line: String): InsertionRule =
-            line.split("->")
-                .map { it.trim() }
-                .let { (pair, charToInsert) -> InsertionRule(pair, charToInsert) }
-    }
-}
-
-typealias Polymer = String
-typealias Element = Char
