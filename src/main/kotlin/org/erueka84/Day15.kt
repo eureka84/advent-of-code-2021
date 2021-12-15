@@ -35,8 +35,8 @@ object Day15 {
 
         private fun shortestPathFromOriginTo(destination: Node): Int {
 
-            val toBeEvaluated = PriorityQueue<PathNode>().apply {
-                val initialNode = PathNode(origin, 0)
+            val toBeEvaluated = PriorityQueue<WeightedNode>().apply {
+                val initialNode = WeightedNode(origin, 0)
                 add(initialNode)
             }
             val visited = mutableSetOf<Node>()
@@ -51,7 +51,7 @@ object Day15 {
                     currentNode.point
                         .neighbors()
                         .filter { it isInRangeOf destination }
-                        .forEach { toBeEvaluated.offer(PathNode(it, currentNode.totalRisk + getValueOf(it))) }
+                        .forEach { toBeEvaluated.offer(WeightedNode(it, currentNode.totalRisk + getValueOf(it))) }
                 }
             }
             error("No path to destination (which is really weird, right?)")
@@ -91,7 +91,7 @@ object Day15 {
             )
     }
 
-    class PathNode(val point: Node, val totalRisk: Int) : Comparable<PathNode> {
-        override fun compareTo(other: PathNode): Int = this.totalRisk - other.totalRisk
+    class WeightedNode(val point: Node, val totalRisk: Int) : Comparable<WeightedNode> {
+        override fun compareTo(other: WeightedNode): Int = this.totalRisk - other.totalRisk
     }
 }
