@@ -8,22 +8,33 @@ object Day15 {
     @JvmStatic
     fun main(args: Array<String>) {
         val lines = readLines("/day15.input").toList()
-        println(part1(lines)) // part 1
+        val grid = Grid.from(lines)
+        println(part1(grid)) // 456
+        println(part2(grid)) // 2831
     }
 
-    private fun part1(lines: List<String>): Int {
-        val grid = Grid.from(lines)
-        return grid.findShortestPath()
-    }
+    private fun part1(grid: Grid): Int = grid.findShortestPath()
+
+    private fun part2(grid: Grid): Int = grid.findShortestPath2()
 
     class Grid(private val array: Array<IntArray>) {
 
         private val rows: Int get() = array.size
         private val cols: Int get() = array.first().size
         private val origin = Node(0, 0)
-        private val destination = Node(rows - 1, cols - 1)
 
         fun findShortestPath(): Int {
+            val oneTileEnd = Node(rows - 1, cols - 1)
+            return shortestPathFromOriginTo(oneTileEnd)
+        }
+
+        fun findShortestPath2(): Int {
+            val fiveByFiveTilesEnd = Node((rows * 5) - 1, (cols * 5) - 1)
+            return shortestPathFromOriginTo(fiveByFiveTilesEnd)
+        }
+
+        private fun shortestPathFromOriginTo(destination: Node): Int {
+
             val toBeEvaluated = PriorityQueue<PathNode>().apply {
                 val initialNode = PathNode(origin, 0)
                 add(initialNode)
@@ -39,17 +50,23 @@ object Day15 {
                     visited.add(currentNode.point)
                     currentNode.point
                         .neighbors()
-                        .filter { exists(it) }
+                        .filter { it isInRangeOf destination }
                         .forEach { toBeEvaluated.offer(PathNode(it, currentNode.totalRisk + getValueOf(it))) }
                 }
             }
             error("No path to destination (which is really weird, right?)")
         }
 
-        private fun getValueOf(point: Node): Int = array[point.x][point.y]
+        private fun getValueOf(point: Node): Int {
+            val dx = point.x / rows
+            val dy = point.y / cols
+            val originalRisk = array[point.y % cols][point.x % rows]
+            val newRisk = (originalRisk + dx + dy)
+            return newRisk.takeIf { it < 10 } ?: (newRisk - 9)
+        }
 
-        private fun exists(it: Node) =
-            it.x in (0 until rows) && it.y in (0 until cols)
+        private infix fun Node.isInRangeOf(destination: Node) =
+            x in (0..destination.x) && y in (0..destination.y)
 
         companion object {
             fun from(input: List<String>): Grid {
