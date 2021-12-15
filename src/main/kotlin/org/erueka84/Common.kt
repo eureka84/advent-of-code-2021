@@ -33,9 +33,9 @@ object MathLib {
             return gcd(x, y - x)
     }
 
-    fun sumOfAllNaturalsUpTo(n: Int): Int = n * (n + 1) / 2
-
     fun Int.triangular() = sumOfAllNaturalsUpTo(this)
+
+    private fun sumOfAllNaturalsUpTo(n: Int): Int = n * (n + 1) / 2
 
     fun List<Int>.mean(): Int = this.sum() / this.size
 
@@ -44,7 +44,7 @@ object MathLib {
             .let { sorted ->
                 val size = sorted.size
                 if (size % 2 == 0) {
-                    (sorted[size / 2] + sorted[(size / 2) + 1]) / 2
+                    (sorted[size / 2] + sorted[(size / 2) - 1]) / 2
                 } else {
                     sorted[size / 2]
                 }
