@@ -20,15 +20,15 @@ object Day15 {
 
         private val rows: Int get() = array.size
         private val cols: Int get() = array.first().size
+        private val origin = Node(0, 0)
+        private val destination = Node(rows - 1, cols - 1)
 
         fun findShortestPath(): Int {
-            val destination = Node(rows - 1, cols - 1)
             val toBeEvaluated = PriorityQueue<PathNode>().apply {
-                val initialNode = PathNode(Node(0, 0), 0)
+                val initialNode = PathNode(origin, 0)
                 add(initialNode)
             }
             val visited = mutableSetOf<Node>()
-
 
             while (toBeEvaluated.isNotEmpty()) {
                 val currentNode = toBeEvaluated.poll()
