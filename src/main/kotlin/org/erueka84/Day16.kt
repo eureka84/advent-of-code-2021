@@ -47,18 +47,14 @@ object Day16 {
         when (iterator.next(1).binaryToInt()) {
             1 -> {
                 val numberOfPackets = iterator.next(11).binaryToInt()
-                val packets = iterate().map { parse(iterator) }.take(numberOfPackets).toList()
-                Operator(version, type, packets)
+                val packets = iterate().map { parse(iterator) }.take(numberOfPackets)
+                Operator(version, type, packets.toList())
             }
             else -> {
                 val payloadLength = iterator.next(15).binaryToInt()
                 val subPackets = iterator.next(payloadLength).iterator()
-                val packets = mutableListOf<Packet>()
-                while (subPackets.hasNext()) {
-                    val packet = parse(subPackets)
-                    packets.add(packet)
-                }
-                Operator(version, type, packets)
+                val packets = iterate().takeWhile { subPackets.hasNext() }.map { parse(subPackets) }
+                Operator(version, type, packets.toList())
             }
         }
 
@@ -103,7 +99,7 @@ object Day16 {
         }
     }
 
-    fun iterate(): Sequence<Int> = generateSequence { 1 }
+    private fun iterate(): Sequence<Int> = generateSequence { 1 }
 
     fun <T> Iterable<T>.productOf(f: (T) -> Long): Long = this.map(f).reduce { acc, el -> acc * el }
 
