@@ -36,7 +36,7 @@ object Day16 {
     }
 
     private fun parseLiteral(iterator: CharIterator, version: Int): Literal {
-        val bytes = generateSequence { 1 }
+        val bytes = iterate()
             .takeWhile { iterator.next() != '0' }
             .map { iterator.next(4) }
             .toList() + iterator.next(4)
@@ -47,7 +47,7 @@ object Day16 {
         when (iterator.next(1).binaryToInt()) {
             1 -> {
                 val numberOfPackets = iterator.next(11).binaryToInt()
-                val packets = generateSequence { 1 }.map { parse(iterator) }.take(numberOfPackets).toList()
+                val packets = iterate().map { parse(iterator) }.take(numberOfPackets).toList()
                 Operator(version, type, packets)
             }
             else -> {
@@ -102,6 +102,8 @@ object Day16 {
             }
         }
     }
+
+    fun iterate(): Sequence<Int> = generateSequence { 1 }
 
     fun <T> Iterable<T>.productOf(f: (T) -> Long): Long = this.map(f).reduce { acc, el -> acc * el }
 
