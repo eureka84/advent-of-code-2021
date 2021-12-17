@@ -6,18 +6,18 @@ object Day16 {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        println(part1())
+        val packet = readPacket()
+        println(part1(packet)) // 949
     }
 
-    private fun part1(): Int {
-        val input = readLines("/day16.input").first()
-        val binaryTransmission =
-            input
-                .map { hexChar -> mapHexToBinary(hexChar) }
-                .joinToString(separator = "")
-
-        val packet= parse(binaryTransmission.iterator())
+    private fun part1(packet: Packet): Int {
         return packet.versionSums
+    }
+
+    private fun readPacket(): Packet {
+        val input = readLines("/day16.input").first()
+        val binaryTransmission = input.map(::mapHexToBinary).joinToString(separator = "")
+        return parse(binaryTransmission.iterator())
     }
 
     fun mapHexToBinary(hexChar: Char) = hexChar.digitToInt(16).toString(2).padStart(4, '0')
@@ -32,7 +32,7 @@ object Day16 {
 
     private fun parseLiteral(iterator: CharIterator, version: Int): Literal {
         val bytes = mutableListOf<String>()
-        while (iterator.next() == '1'){
+        while (iterator.next() == '1') {
             bytes.add(iterator.next(4))
         }
         bytes.add(iterator.next(4))
