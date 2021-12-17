@@ -8,7 +8,7 @@ object Day16 {
     fun main(args: Array<String>) {
         val packet = readPacket()
         println(part1(packet)) // 949
-        println(part2(packet)) //
+        println(part2(packet)) // 1114600142730
     }
 
     private fun part2(packet: Packet): Long {
