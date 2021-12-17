@@ -98,7 +98,7 @@ object Day16 {
         override fun evaluate(): Long {
             return when(type) {
                 0 -> packets.sumOf { it.evaluate() }
-                1 -> packets.fold(1) {acc, packet -> acc * packet.evaluate() }
+                1 -> packets.productOf { it.evaluate() }
                 2 -> packets.minOf { it.evaluate() }
                 3 -> packets.maxOf { it.evaluate() }
                 5 -> if (packets[0].evaluate() > packets[1].evaluate()) 1 else 0
@@ -107,6 +107,8 @@ object Day16 {
             }
         }
     }
+
+    fun <T> Iterable<T>.productOf(f: (T) -> Long): Long = this.fold(1L) { acc, el -> acc * f(el) }
 
     fun CharIterator.next(n: Int): String = (1..n).map { next() }.toCharArray().let { String(it) }
 
