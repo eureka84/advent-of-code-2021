@@ -108,7 +108,7 @@ object Day16 {
         }
     }
 
-    fun <T> Iterable<T>.productOf(f: (T) -> Long): Long = this.fold(1L) { acc, el -> acc * f(el) }
+    fun <T> Iterable<T>.productOf(f: (T) -> Long): Long = this.map(f).reduce { acc, el -> acc * el }
 
     fun CharIterator.next(n: Int): String = (1..n).map { next() }.toCharArray().let { String(it) }
 
