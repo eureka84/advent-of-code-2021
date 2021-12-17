@@ -36,11 +36,10 @@ object Day16 {
     }
 
     private fun parseLiteral(iterator: CharIterator, version: Int): Literal {
-        val bytes = mutableListOf<String>()
-        while (iterator.next() == '1') {
-            bytes.add(iterator.next(4))
-        }
-        bytes.add(iterator.next(4))
+        val bytes = generateSequence { 1 }
+            .takeWhile { iterator.next() != '0' }
+            .map { iterator.next(4) }
+            .toList() + iterator.next(4)
         return Literal(version, bytes)
     }
 
