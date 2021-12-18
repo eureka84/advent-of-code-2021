@@ -11,13 +11,9 @@ object Day16 {
         println(part2(packet)) // 1114600142730
     }
 
-    private fun part2(packet: Packet): Long {
-        return packet.evaluate()
-    }
+    private fun part2(packet: Packet): Long = packet.evaluate()
 
-    private fun part1(packet: Packet): Int {
-        return packet.versionSums
-    }
+    private fun part1(packet: Packet): Int = packet.versionSums
 
     private fun readPacket(): Packet {
         val input = readLines("/day16.input").first()
@@ -25,15 +21,16 @@ object Day16 {
         return parse(binaryTransmission.iterator())
     }
 
-    fun mapHexToBinary(hexChar: Char) = hexChar.digitToInt(16).toString(2).padStart(4, '0')
+    fun mapHexToBinary(hexChar: Char) =
+        hexChar.digitToInt(16).toString(2).padStart(4, '0')
 
-    private fun parse(iterator: CharIterator): Packet {
-        val version = iterator.next(3).binaryToInt()
-        return when (val type = iterator.next(3).binaryToInt()) {
-            4 -> parseLiteral(iterator, version)
-            else -> parseOperator(iterator, version, type)
+    private fun parse(iterator: CharIterator): Packet =
+        iterator.next(3).binaryToInt().let { version ->
+            when (val type = iterator.next(3).binaryToInt()) {
+                4 -> parseLiteral(iterator, version)
+                else -> parseOperator(iterator, version, type)
+            }
         }
-    }
 
     private fun parseLiteral(iterator: CharIterator, version: Int): Literal {
         val bytes = iterate()
@@ -62,7 +59,6 @@ object Day16 {
         abstract val versionSums: Int
         abstract val version: Int
         abstract val type: Int
-        abstract val length: Int
 
         abstract fun evaluate(): Long
     }
@@ -72,8 +68,6 @@ object Day16 {
             get() = version
         override val type: Int
             get() = 4
-        override val length: Int
-            get() = HEADERS_LENGTH + 5 * payload.size
 
         override fun evaluate(): Long {
             return payload.joinToString(separator = "").toLong(2)
@@ -83,11 +77,9 @@ object Day16 {
     data class Operator(override val version: Int, override val type: Int, val packets: List<Packet>) : Packet() {
         override val versionSums: Int
             get() = version + packets.sumOf { it.versionSums }
-        override val length: Int
-            get() = HEADERS_LENGTH + packets.sumOf { it.length }
 
-        override fun evaluate(): Long {
-            return when(type) {
+        override fun evaluate(): Long =
+            when (type) {
                 0 -> packets.sumOf { it.evaluate() }
                 1 -> packets.productOf { it.evaluate() }
                 2 -> packets.minOf { it.evaluate() }
@@ -96,7 +88,6 @@ object Day16 {
                 6 -> if (packets[0].evaluate() < packets[1].evaluate()) 1 else 0
                 else -> if (packets[0].evaluate() == packets[1].evaluate()) 1 else 0
             }
-        }
     }
 
     private fun iterate(): Sequence<Int> = generateSequence { 1 }
@@ -106,7 +97,5 @@ object Day16 {
     fun CharIterator.next(n: Int): String = (1..n).map { next() }.toCharArray().let { String(it) }
 
     private fun String.binaryToInt() = this.toInt(2)
-
-    private const val HEADERS_LENGTH = 6
 
 }
