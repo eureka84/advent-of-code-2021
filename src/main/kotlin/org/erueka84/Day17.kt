@@ -8,13 +8,11 @@ object Day17 {
     @JvmStatic
     fun main(args: Array<String>) {
         val input = readLines("/day17.input").first()
-        println(part1(input))
+        val targetArea = TargetArea.parse(input)
+        println(part1(targetArea)) // 2850
     }
 
-    private fun part1(input: String): Int {
-        val targetArea = TargetArea.parse(input)
-        return targetArea.y0.triangular()
-    }
+    private fun part1(targetArea1: TargetArea): Int = targetArea1.y0.triangular()
 
     data class TargetArea(val x0: Int, val x1:Int, val y0: Int, val y1:Int) {
         companion object {
